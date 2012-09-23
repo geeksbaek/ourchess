@@ -1,0 +1,11 @@
+﻿* {
+    font-family: 'Nunito', sans-serif;
+}
+
+footer > img {
+    height: 50px;
+}
+
+body {
+    padding: 2%;
+}

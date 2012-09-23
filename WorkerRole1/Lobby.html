@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Our Chess! Realtime Multiplayer</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link href='http://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/css/lobby.css">
+    <script src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/rndstr.js"></script>
+    <script>
+        $(document).ready(function () {
+            var socket = io.connect();
+            $('#create').click(function () {
+                var rndstr = new RndStr();
+                rndstr.setType(0);
+                rndstr.setStr(10);
+
+                var room = rndstr.getStr();
+                socket.emit('addroom', room);
+                location = '/chess/' + room;
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Our Chess! Realtime Multiplayer</h1>
+    <p>Connect Web Server With Socket.io</p>
+    <button id="create">CREATE ROOM</button><br />
+    <br />
+    <footer>
+        <!--
+        <img src="/img/nodejs.png" />
+        <img src="/img/HTML5_Logo_512.png" />
+        <img src="/img/powered-by-windows-azure.png-550x0.png" />
+        -->
+    </footer>
+</body>
+</html>

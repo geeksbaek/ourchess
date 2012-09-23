@@ -1,0 +1,35 @@
+﻿* {
+    font-family: 'Malgun Gothic';
+    font-size: 12px;
+    border: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+#chessBoard {
+    display: table;
+}
+
+#canvas {
+    border: solid 4px #000000;
+}
+
+#dragCanvas {
+    visibility: hidden;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+#record {
+    resize: none;
+    border: solid 4px #000000;
+    margin-left: 10px;
+    margin-top: 0;
+    background-color: whitesmoke;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: whitesmoke;
+}
