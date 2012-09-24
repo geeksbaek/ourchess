@@ -76,9 +76,15 @@ function OpponentEvent() {
         theDragCanvas.style.visibility = 'hidden';
         dragContext.clearRect(0, 0, theDragCanvas.width, theDragCanvas.height);
 
-        if (isBeingAttacked(piecePosition, findMyKing(piecePosition))) {
-            check = true;
-            alert('check!');
+        var _isCheck = itCanBeAttackedOrDepended(piecePosition, findMyKing(piecePosition));
+        if (_isCheck.bool) {
+            if (isCheckmate(piecePosition, findMyKing(piecePosition), _isCheck.attacker)) {
+                movePermission = false;
+                alert('Checkmate!');
+            } else {
+                check = true;
+                alert('Check!');
+            }
         } else {
             check = false;
         }
