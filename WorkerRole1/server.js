@@ -119,8 +119,8 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('castle', function (data) {
         socket.get('room', function (error, room) {
-            socket.broadcast.to(room).emit('drawCastle_opponent', data);
-            socket.broadcast.to(room).emit('drawCastle_guest', data);
+            socket.broadcast.to(room).emit('castle_opponent', data);
+            socket.broadcast.to(room).emit('castle_guest', data);
         });
     });
 

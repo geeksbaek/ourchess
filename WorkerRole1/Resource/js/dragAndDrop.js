@@ -64,14 +64,14 @@ function mouseUpEvent(event) {
     var possible = isDropPossible(event);
 
     if (possible == false) { // 이동이 불가할 경우
-        drawPieceX(context, dragObj.piece, Math.floor(dragObj.p.y), Math.floor(dragObj.p.x));
+        drawPieceX(context, dragObj.piece, Math.floor(dragObj.p.x), Math.floor(dragObj.p.y));
 
         socket.emit('dragEnd', {
             myColor: myColor,
             possible: false,
             drawPiece_piece: dragObj.piece,
-            drawPiece_x: Math.floor(dragObj.p.y),
-            drawPiece_y: Math.floor(dragObj.p.x)
+            drawPiece_x: Math.floor(dragObj.p.x),
+            drawPiece_y: Math.floor(dragObj.p.y)
         });
     } else { // 이동이 가능할 경우
         var p = possible;

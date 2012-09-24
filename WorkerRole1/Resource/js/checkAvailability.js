@@ -28,15 +28,15 @@ function isDropPossible(event) {
     if (!isInBoard(nowPoint)) {
         return false;
     }
-
+   
     if (dragObj.piece.charAt(0) == nowObj.piece.charAt(0)) {
         return false;
     }
-
+    
     if (!isRightRule(dragObj.piece.charAt(1), nowPoint)) {
         return false;
     }
-    
+
     var previewPosition = $.extend(true, [], piecePosition);
     setPosition(previewPosition, dragObj.p, getPosition(nowPoint).p, dragObj.piece);
 
@@ -58,10 +58,10 @@ function isInBoard(p) {
 function isRightRule(piece, endP) {
     var result = true;
     var pointArgs = {
-        start: { x: dragObj.p.y, y: dragObj.p.x },
+        start: { x: dragObj.p.x, y: dragObj.p.y },
         end: { x: Math.floor(endP.x), y: Math.floor(endP.y) }
     }
-
+    
     switch (piece) {
         case 'P':
             result = pawnRule(pointArgs);
@@ -206,35 +206,15 @@ function diagonalCheck(start, end) {
 
 function horizontalAndVerticalCheck(start, end) {
     if (start.x == end.x) { // 수직
-        return horizontalCheck(start, end);
-    } else if (start.y == end.y) { // 수평
         return VerticalCheck(start, end);
+    } else if (start.y == end.y) { // 수평
+        return horizontalCheck(start, end);
     } else {
         return false;
     }
 }
 
 function horizontalCheck(start, end) {
-    if (start.y < end.y) { // 위에서 밑으로
-        for (var i = start.y + 1; i < end.y; i++) {
-            if (!getPosition({ x: start.x, y: i }).isEmpty) {
-                return false;
-            }
-        }
-        return true;
-    } else if (start.y > end.y) { //  밑에서 위로
-        for (var i = end.y + 1; i < start.y; i++) {
-            if (!getPosition({ x: start.x, y: i }).isEmpty) {
-                return false;
-            }
-        }
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function VerticalCheck(start, end) {
     if (start.x < end.x) { // 왼쪽에서 오른쪽으로
         for (var i = start.x + 1; i < end.x; i++) {
             if (!getPosition({ x: i, y: start.y }).isEmpty) {
@@ -254,6 +234,26 @@ function VerticalCheck(start, end) {
     }
 }
 
+function VerticalCheck(start, end) {
+    if (start.y < end.y) { // 위에서 밑으로
+        for (var j = start.y + 1; j < end.y; j++) {
+            if (!getPosition({ x: start.x, y: j }).isEmpty) {
+                return false;
+            }
+        }
+        return true;
+    } else if (start.y > end.y) { // 밑에서 위로
+        for (var j = end.y + 1; j < start.y; j++) {
+            if (!getPosition({ x: start.x, y: j }).isEmpty) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function castleCheck(start, end) {
     if (start.x > end.x) { // 퀸사이드
         for (var i = 1; i < start.x; i++) {
@@ -262,7 +262,7 @@ function castleCheck(start, end) {
             }
 
             var previewPosition = $.extend(true, [], piecePosition);
-            setPosition(previewPosition, dragObj.p, { y: i, x: start.y }, dragObj.piece);
+            setPosition(previewPosition, dragObj.p, { x: i, y: start.y }, dragObj.piece);
 
             if (isBeingAttacked(previewPosition, findMyKing(previewPosition))) {
                 return false;
@@ -270,7 +270,7 @@ function castleCheck(start, end) {
         }
         drawSquare(context, 0, 7);
         drawPieceX(context, myColor + 'R', start.x - 1, start.y);
-        setPosition(piecePosition, { y: 0, x: start.y }, { y: start.x - 1, x: start.y }, myColor + 'R');
+        setPosition(piecePosition, { x: 0, y: start.y }, { x: start.x - 1, y: start.y }, myColor + 'R');
 
         socket.emit('castle', {
             myColor: myColor,
@@ -278,7 +278,11 @@ function castleCheck(start, end) {
             drawSquare_y: 7,
             drawPieceX_piece: myColor + 'R',
             drawPieceRook_x: start.x - 1,
-            drawPieceRook_y: start.y
+            drawPieceRook_y: start.y,
+            setPosition_start_x: 0,
+            setPosition_start_y: start.y,
+            setPosition_end_x: start.x - 1,
+            setPosition_end_y: start.y
         });
     } else { // 킹사이드
         for (var i = 6; i > start.x; i--) {
@@ -287,15 +291,15 @@ function castleCheck(start, end) {
             }
 
             var previewPosition = $.extend(true, [], piecePosition);
-            setPosition(previewPosition, dragObj.p, { y: i, x: start.y }, dragObj.piece);
-            console.log(previewPosition);
+            setPosition(previewPosition, dragObj.p, { x: i, y: start.y }, dragObj.piece);
+
             if (isBeingAttacked(previewPosition, findMyKing(previewPosition))) {
                 return false;
             }
         }
         drawSquare(context, 7, 7);
         drawPieceX(context, myColor + 'R', start.x + 1, start.y);
-        setPosition(piecePosition, { y: 7, x: start.y }, { y: start.x + 1, x: start.y }, myColor + 'R');
+        setPosition(piecePosition, { x: 7, y: start.y }, { x: start.x + 1, y: start.y }, myColor + 'R');
 
         socket.emit('castle', {
             myColor: myColor,
@@ -303,7 +307,11 @@ function castleCheck(start, end) {
             drawSquare_y: 7,
             drawPieceX_piece: myColor + 'R',
             drawPieceRook_x: start.x + 1,
-            drawPieceRook_y: start.y
+            drawPieceRook_y: start.y,
+            setPosition_start_x: 7,
+            setPosition_start_y: start.y,
+            setPosition_end_x: start.x + 1,
+            setPosition_end_y: start.y
         });
     }
     
@@ -314,7 +322,7 @@ function isBeingAttacked(position, target) {
     var enemyColor = myColor == 'W' ? 'B' : 'W';
 
     try {
-        if (position[target.x - 1][target.y - 1] == (enemyColor + 'P')) { // 폰의 공격을 받는 위치일 때
+        if (position[target.y - 1][target.x - 1] == (enemyColor + 'P')) { // 폰의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -322,7 +330,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x + 1][target.y - 1] == (enemyColor + 'P')) { // 폰의 공격을 받는 위치일 때
+        if (position[target.y - 1][target.x + 1] == (enemyColor + 'P')) { // 폰의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -330,7 +338,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x - 1][target.y - 2] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
+        if (position[target.y - 1][target.x - 2] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -338,7 +346,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x + 1][target.y - 2] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
+        if (position[target.y + 1][target.x - 2] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -346,7 +354,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x - 2][target.y - 1] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
+        if (position[target.y - 2][target.x - 1] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -354,7 +362,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x + 2][target.y - 1] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
+        if (position[target.y + 2][target.x - 1] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -362,7 +370,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x - 2][target.y + 1] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
+        if (position[target.y - 2][target.x + 1] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -370,7 +378,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x + 2][target.y + 1] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
+        if (position[target.y + 2][target.x + 1] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -378,7 +386,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x - 1][target.y + 2] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
+        if (position[target.y - 1][target.x + 2] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -386,7 +394,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x + 1][target.y + 2] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
+        if (position[target.y + 1][target.x + 2] == (enemyColor + 'N')) { // 나이트의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -394,7 +402,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x - 1][target.y - 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
+        if (position[target.y - 1][target.x - 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -402,7 +410,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x][target.y - 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
+        if (position[target.y][target.x - 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -410,7 +418,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x + 1][target.y - 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
+        if (position[target.y + 1][target.x - 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -418,7 +426,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x - 1][target.y] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
+        if (position[target.y - 1][target.x] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -426,7 +434,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x + 1][target.y] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
+        if (position[target.y + 1][target.x] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -434,7 +442,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x - 1][target.y + 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
+        if (position[target.y - 1][target.x + 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -442,7 +450,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x][target.y + 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
+        if (position[target.y][target.x + 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -450,7 +458,7 @@ function isBeingAttacked(position, target) {
     }
 
     try {
-        if (position[target.x + 1][target.y + 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
+        if (position[target.y + 1][target.x + 1] == (enemyColor + 'K')) { // 킹의 공격을 받는 위치일 때
             return true;
         }
     } catch (e) {
@@ -458,90 +466,114 @@ function isBeingAttacked(position, target) {
     }
 
     // 상
-    for (var i = target.y - 1; i >= 0; i--) {
-        if (position[target.x][i].charAt(0) == myColor) { // 아군 기물로 막혀있으면 공격받지 않음
+    for (var j = target.y - 1; j >= 0; j--) {
+        if (position[j][target.x].charAt(0) == myColor) { // 아군 기물로 막혀있으면 공격받지 않음
             break;
-        }
-
-        if (position[target.x][i] == (enemyColor + 'R') || position[target.x][i] == (enemyColor + 'Q')) {
-            return true;
+        } else {
+            var temp = position[j][target.x].charAt(1);
+            if (temp == 'B' || temp == 'K' || temp == 'N' || temp == 'P') {
+                break;
+            } else if (temp == 'R' || temp == 'Q') {
+                return true;
+            }
         }
     }
 
     // 하
-    for (var i = target.y + 1; i <= 7; i++) {
-        if (position[target.x][i].charAt(0) == myColor) { // 아군 기물로 막혀있으면 공격받지 않음
+    for (var j = target.y + 1; j <= 7; j++) {
+        if (position[j][target.x].charAt(0) == myColor) { // 아군 기물로 막혀있으면 공격받지 않음
             break;
-        }
-
-        if (position[target.x][i] == (enemyColor + 'R') || position[target.x][i] == (enemyColor + 'Q')) {
-            return true;
+        } else {
+            var temp = position[j][target.x].charAt(1);
+            if (temp == 'B' || temp == 'K' || temp == 'N' || temp == 'P') {
+                break;
+            } else if (temp == 'R' || temp == 'Q') {
+                return true;
+            }
         }
     }
 
     // 좌
     for (var i = target.x - 1; i >= 0 ; i--) {
-        if (position[i][target.y].charAt(0) == myColor) { // 아군 기물로 막혀있으면 공격받지 않음
+        if (position[target.y][i].charAt(0) == myColor) { // 아군 기물로 막혀있으면 공격받지 않음
             break;
-        }
-
-        if (position[i][target.y] == (enemyColor + 'R') || position[i][target.y] == (enemyColor + 'Q')) {
-            return true;
+        } else {
+            var temp = position[target.y][i].charAt(1);
+            if (temp == 'B' || temp == 'K' || temp == 'N' || temp == 'P') {
+                break;
+            } else if (temp == 'R' || temp == 'Q') {
+                return true;
+            }
         }
     }
 
     // 우
     for (var i = target.x + 1; i <= 7 ; i++) {
-        if (position[i][target.y].charAt(0) == myColor) { // 아군 기물로 막혀있으면 공격받지 않음
+        if (position[target.y][i].charAt(0) == myColor) { // 아군 기물로 막혀있으면 공격받지 않음
             break;
-        }
-
-        if (position[i][target.y] == (enemyColor + 'R') || position[i][target.y] == (enemyColor + 'Q')) {
-            return true;
+        } else {
+            var temp = position[target.y][i].charAt(1);
+            if (temp == 'B' || temp == 'K' || temp == 'N' || temp == 'P') {
+                break;
+            } else if (temp == 'R' || temp == 'Q') {
+                return true;
+            }
         }
     }
 
     // 좌측 상단 대각선
     for (var i = target.x - 1, j = target.y - 1; i >= 0 && j >= 0; i--, j--) {
-        if (position[i][j].charAt(0) == myColor) {
+        if (position[j][i].charAt(0) == myColor) {
             break;
-        }
-
-        if (position[i][j] == (enemyColor + 'B') || position[i][j] == (enemyColor + 'Q')) {
-            return true;
+        } else {
+            var temp = position[j][i].charAt(1);
+            if (temp == 'R' || temp == 'K' || temp == 'N' || temp == 'P') {
+                break;
+            } else if (temp == 'B' || temp == 'Q') {
+                return true;
+            }
         }
     }
 
     // 우측 상단 대각선
     for (var i = target.x + 1, j = target.y - 1; i <= 7 && j >= 0; i++, j--) {
-        if (position[i][j].charAt(0) == myColor) {
+        if (position[j][i].charAt(0) == myColor) {
             break;
-        }
-
-        if (position[i][j] == (enemyColor + 'B') || position[i][j] == (enemyColor + 'Q')) {
-            return true;
+        } else {
+            var temp = position[j][i].charAt(1);
+            if (temp == 'R' || temp == 'K' || temp == 'N' || temp == 'P') {
+                break;
+            } else if (temp == 'B' || temp == 'Q') {
+                return true;
+            }
         }
     }
 
     // 좌측 하단 대각선
     for (var i = target.x - 1, j = target.y + 1; i >= 0 && j <= 7; i--, j++) {
-        if (position[i][j].charAt(0) == myColor) {
+        if (position[j][i].charAt(0) == myColor) {
             break;
-        }
-
-        if (position[i][j] == (enemyColor + 'B') || position[i][j] == (enemyColor + 'Q')) {
-            return true;
+        } else {
+            var temp = position[j][i].charAt(1);
+            if (temp == 'R' || temp == 'K' || temp == 'N' || temp == 'P') {
+                break;
+            } else if (temp == 'B' || temp == 'Q') {
+                return true;
+            }
         }
     }
 
     // 우측 하단 대각선
     for (var i = target.x + 1, j = target.y + 1; i <= 7 && j <= 7; i++, j++) {
-        if (position[i][j].charAt(0) == myColor) {
+        if (position[j][i].charAt(0) == myColor) {
             break;
-        }
-
-        if (position[i][j] == (enemyColor + 'B') || position[i][j] == (enemyColor + 'Q')) {
-            return true;
+        } else {
+            var temp = position[j][i].charAt(1);
+            if (temp == 'R' || temp == 'K' || temp == 'N' || temp == 'P') {
+                break;
+            } else if (temp == 'B' || temp == 'Q') {
+                return true;
+            }
         }
     }
 

@@ -29,10 +29,10 @@
             }
         }
 
-        for (var i = 0; i < 8; i++) {
-            for (var j = 0; j < 8; j++) {
-                if (piecePosition[i][j] != '') {
-                    drawPieceX(context, piecePosition[i][j], j, i);
+        for (var y = 0; y < 8; y++) {
+            for (var x = 0; x < 8; x++) {
+                if (piecePosition[y][x] != '') {
+                    drawPieceX(context, piecePosition[y][x], x, y);
                 }
             }
         }
