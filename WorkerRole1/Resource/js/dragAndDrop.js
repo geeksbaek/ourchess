@@ -75,6 +75,7 @@ function mouseUpEvent(event) {
         });
     } else { // 이동이 가능할 경우
         var p = possible;
+
         setPosition(piecePosition, dragObj.p, getPosition(p).p, dragObj.piece);
         drawSquare(context, Math.floor(p.x), Math.floor(p.y)); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
         drawPieceX(context, dragObj.piece, Math.floor(p.x), Math.floor(p.y));

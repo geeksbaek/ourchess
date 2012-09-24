@@ -22,6 +22,7 @@ function init(room) {
 
         setResolution();
         
+        this.oldPiecePosition;
         this.piecePosition;
         this.dragObj;
 

@@ -28,11 +28,11 @@ function isDropPossible(event) {
     if (!isInBoard(nowPoint)) {
         return false;
     }
-   
+
     if (dragObj.piece.charAt(0) == nowObj.piece.charAt(0)) {
         return false;
     }
-    
+
     if (!isRightRule(dragObj.piece.charAt(1), nowPoint)) {
         return false;
     }
@@ -61,7 +61,7 @@ function isRightRule(piece, endP) {
         start: { x: dragObj.p.x, y: dragObj.p.y },
         end: { x: Math.floor(endP.x), y: Math.floor(endP.y) }
     }
-    
+
     switch (piece) {
         case 'P':
             result = pawnRule(pointArgs);
@@ -122,8 +122,15 @@ function pawnRule(p) {
                 dragObj.piece = myColor + 'Q';
             }
             return true;
-        } else {
-            return false;
+        } else { // 대각선 1칸 이동이지만 해당 위치가 빈 블록일 때
+            if (piecePosition[p.start.y][p.end.x] == ((myColor == 'W' ? 'B' : 'W') + 'P') && oldPiecePosition[p.start.y][p.end.x] == '' && oldPiecePosition[p.start.y - 2][p.end.x] == ((myColor == 'W' ? 'B' : 'W') + 'P') && piecePosition[p.start.y - 2][p.end.x] == '') { // 앙파상
+                piecePosition[p.start.y][p.end.x] = '';
+                drawSquare(context, p.end.x, p.start.y);
+                socket.emit('enPassant', { x: p.end.x, y: p.start.y, myColor: myColor });
+                return true;
+            } else {
+                return false;
+            }
         }
     } else {
         return false;
@@ -314,7 +321,7 @@ function castleCheck(start, end) {
             setPosition_end_y: start.y
         });
     }
-    
+
     return true;
 }
 

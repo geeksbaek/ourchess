@@ -43,6 +43,11 @@ function OpponentEvent() {
         drawPieceX(context, data.drawPieceX_piece, Math.abs(7 - data.drawPieceRook_x), Math.abs(7 - data.drawPieceRook_y));
         setPosition(piecePosition, { x: Math.abs(7 - data.setPosition_start_x), y: Math.abs(7 - data.setPosition_start_y) }, { x: Math.abs(7 - data.setPosition_end_x), y: Math.abs(7 - data.setPosition_end_y) }, data.myColor + 'R');
     });
+    
+    socket.on('enPassant_opponent', function (data) {
+        piecePosition[Math.abs(7 - data.y)][Math.abs(7 - data.x)] = '';
+        drawSquare(context, Math.abs(7 - data.x), Math.abs(7 - data.y));
+    });
 
     socket.on('dragStart_opponent', function (data) {
         drawSquare(context, Math.abs(7 - data.drawSquare_x), Math.abs(7 - data.drawSquare_y));
@@ -62,6 +67,7 @@ function OpponentEvent() {
         if (data.possible == false) {
             drawPieceX(context, data.drawPiece_piece, Math.abs(7 - data.drawPiece_x), Math.abs(7 - data.drawPiece_y));
         } else {
+            oldPiecePosition = $.extend(true, [], piecePosition);
             setPosition(piecePosition, { x: Math.abs(7 - data.setPosition_p_x), y: Math.abs(7 - data.setPosition_p_y) }, { x: Math.abs(7 - data.setPosition_getPosition_x), y: Math.abs(7 - data.setPosition_getPosition_y) }, data.setPosition_piece);
             drawSquare(context, Math.abs(7 - data.drawPieceAndSquare_x), Math.abs(7 - data.drawPieceAndSquare_y)); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
             drawPieceX(context, data.drawPieceAndSquare_piece, Math.abs(7 - data.drawPieceAndSquare_x), Math.abs(7 - data.drawPieceAndSquare_y));
@@ -89,6 +95,16 @@ function guestEvent() {
             drawSquare(context, Math.abs(7 - data.drawSquare_x), Math.abs(7 - data.drawSquare_y));
             drawPieceX(context, data.drawPieceX_piece, Math.abs(7 - data.drawPieceRook_x), Math.abs(7 - data.drawPieceRook_y));
             setPosition(piecePosition, { x: Math.abs(7 - data.setPosition_start_x), y: Math.abs(7 - data.setPosition_start_y) }, { x: Math.abs(7 - data.setPosition_end_x), y: Math.abs(7 - data.setPosition_end_y) }, data.myColor + 'R');
+        }
+    });
+
+    socket.on('enPassant_guest', function (data) {
+        if (data.myColor == 'W') {
+            piecePosition[data.y][data.x] = '';
+            drawSquare(context, data.x, data.y);
+        } else {
+            piecePosition[Math.abs(7 - data.y)][Math.abs(7 - data.x)] = '';
+            drawSquare(context, Math.abs(7 - data.x), Math.abs(7 - data.y));
         }
     });
 

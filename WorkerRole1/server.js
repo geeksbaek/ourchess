@@ -124,6 +124,13 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    socket.on('enPassant', function (data) {
+        socket.get('room', function (error, room) {
+            socket.broadcast.to(room).emit('enPassant_opponent', data);
+            socket.broadcast.to(room).emit('enPassant_guest', data);
+        });
+    });
+
     socket.on('disconnect', function () {
         console.log('disconnect');
     });
