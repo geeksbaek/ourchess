@@ -59,16 +59,16 @@ io.sockets.on('connection', function (socket) {
             roomArray[data].count++;
 
             if (roomArray[data].count == 1) {
-                socket.emit('id', { color: 'W', position: roomArray[data].position });
+                socket.emit('id', { yourColor: 'W', opponentColor: 'B', position: roomArray[data].position });
                 console.log('[' + data + '] ' + 'White Player Joining. Waiting for opponent..');
             } else if (roomArray[data].count == 2) {
-                socket.emit('id', { color: 'B', position: roomArray[data].position });
+                socket.emit('id', { yourColor: 'B', opponentColor: 'W', position: roomArray[data].position });
                 socket.get('room', function (error, room) {
                     socket.broadcast.to(room).emit('gameStart', true);
                 });
                 console.log('[' + data + '] ' + 'Black Player Joining. Game Start!');
             } else {
-                socket.emit('id', { color: 'Guest', position: roomArray[data].position });
+                socket.emit('id', { yourColor: 'Guest', position: roomArray[data].position });
                 roomArray[data].guest++;
                 console.log('[' + data + '] ' + 'Guest Player Joining.');
             }
@@ -128,6 +128,18 @@ io.sockets.on('connection', function (socket) {
         socket.get('room', function (error, room) {
             socket.broadcast.to(room).emit('enPassant_opponent', data);
             socket.broadcast.to(room).emit('enPassant_guest', data);
+        });
+    });
+
+    socket.on('check', function (data) {
+        socket.get('room', function (error, room) {
+            socket.broadcast.to(room).emit('check', data);
+        });
+    });
+
+    socket.on('gameEnd', function (data) {
+        socket.get('room', function (error, room) {
+            socket.broadcast.to(room).emit('gameEnd', data);
         });
     });
 

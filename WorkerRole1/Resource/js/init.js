@@ -71,13 +71,13 @@ function setResolution() {
         if ($(window).height() > 500) { // 데스크탑
             PIECE_SIZE = 55;
         } else { // 모바일
-            PIECE_SIZE = 40;
+            PIECE_SIZE = 30;
         }
     } else { // 세로모드
         if ($(window).width() > 700) { // 데스크탑
             PIECE_SIZE = 55;
         } else { // 모바일
-            PIECE_SIZE = 40;
+            PIECE_SIZE = 30;
             recordVisible = false;
         }
     }

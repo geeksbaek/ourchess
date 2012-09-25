@@ -2,21 +2,24 @@
     socket.emit('join', room);
 
     socket.on('id', function (data) {
-        console.log(data);
-        if (data.color == 'Guest') {
+        if (data.yourColor == 'Guest') {
             piecePosition = data.position;
             guestEvent();
-        } else if (data.color == 'B') {
+        } else if (data.yourColor == 'B') {
             piecePosition = rotateBoard(data.position);
             OpponentEvent();
             dnd();
-        } else if (data.color == 'W') {            
+            enemyColor = data.opponentColor;
+        } else if (data.yourColor == 'W') {
             piecePosition = data.position;
             OpponentEvent();
             dnd();
+            enemyColor = data.opponentColor;
+
+            setTimeout(function () { alert('주소를 공유해서 상대방을 초대하세요!'); }, 300);
         }
 
-        myColor = data.color;
+        myColor = data.yourColor;        
         draw();
     });
 
@@ -24,7 +27,15 @@
         if (myColor == 'W') {
             movePermission = true;
         }
-    });    
+    });
+
+    socket.on('check', function (data) {
+        alert('Check!');
+    });
+
+    socket.on('gameEnd', function (data) {
+        alert(data.reason + '!');
+    });
 
     socket.on('disconnect', function (data) {
         // alert('서버와의 연결이 끊겼습니다.');
@@ -39,11 +50,11 @@ function OpponentEvent() {
     });
 
     socket.on('castle_opponent', function (data) {
-        drawSquare(context, Math.abs(7 - data.drawSquare_x), Math.abs(7 - data.drawSquare_y));
-        drawPieceX(context, data.drawPieceX_piece, Math.abs(7 - data.drawPieceRook_x), Math.abs(7 - data.drawPieceRook_y));
-        setPosition(piecePosition, { x: Math.abs(7 - data.setPosition_start_x), y: Math.abs(7 - data.setPosition_start_y) }, { x: Math.abs(7 - data.setPosition_end_x), y: Math.abs(7 - data.setPosition_end_y) }, data.myColor + 'R');
+        drawSquare(context, Math.abs(7 - data.oldRook.x), Math.abs(7 - data.oldRook.y));
+        drawPieceX(context, data.myColor + 'R', Math.abs(7 - data.newRook.x), Math.abs(7 - data.newRook.y));
+        setPosition(piecePosition, { x: Math.abs(7 - data.oldRook.x), y: Math.abs(7 - data.oldRook.y) }, { x: Math.abs(7 - data.newRook.x), y: Math.abs(7 - data.newRook.y) }, data.myColor + 'R');
     });
-    
+
     socket.on('enPassant_opponent', function (data) {
         piecePosition[Math.abs(7 - data.y)][Math.abs(7 - data.x)] = '';
         drawSquare(context, Math.abs(7 - data.x), Math.abs(7 - data.y));
@@ -81,12 +92,23 @@ function OpponentEvent() {
             if (isCheckmate(piecePosition, findMyKing(piecePosition), _isCheck.attacker)) {
                 movePermission = false;
                 alert('Checkmate!');
+
+                socket.emit('gameEnd', { reason: 'Checkmate' });
             } else {
                 check = true;
                 alert('Check!');
+
+                socket.emit('check', {});
             }
         } else {
-            check = false;
+            if (isStalemate(piecePosition)) {
+                movePermission = false;
+                alert('Stalemate!');
+
+                socket.emit('gameEnd', { reason: 'Stalemate' });
+            } else {
+                check = false;
+            }
         }
     });
 }
@@ -94,13 +116,13 @@ function OpponentEvent() {
 function guestEvent() {
     socket.on('castle_guest', function (data) {
         if (data.myColor == 'W') {
-            drawSquare(context, data.drawSquare_x, data.drawSquare_y);
-            drawPieceX(context, data.drawPieceX_piece, data.drawPieceRook_x, data.drawPieceRook_y);
-            setPosition(piecePosition, { x: data.setPosition_start_x, y: data.setPosition_start_y }, { x: data.setPosition_end_x, y: data.setPosition_end_y }, data.myColor + 'R');
+            drawSquare(context, data.oldRook.x, data.oldRook.y);
+            drawPieceX(context, data.myColor + 'R', data.newRook.x, data.newRook.y);
+            setPosition(piecePosition, oldRook, newRook, data.myColor + 'R');
         } else {
-            drawSquare(context, Math.abs(7 - data.drawSquare_x), Math.abs(7 - data.drawSquare_y));
-            drawPieceX(context, data.drawPieceX_piece, Math.abs(7 - data.drawPieceRook_x), Math.abs(7 - data.drawPieceRook_y));
-            setPosition(piecePosition, { x: Math.abs(7 - data.setPosition_start_x), y: Math.abs(7 - data.setPosition_start_y) }, { x: Math.abs(7 - data.setPosition_end_x), y: Math.abs(7 - data.setPosition_end_y) }, data.myColor + 'R');
+            drawSquare(context, Math.abs(7 - data.oldRook.x), Math.abs(7 - data.oldRook.y));
+            drawPieceX(context, data.drawPieceX_piece, Math.abs(7 - data.newRook.x), Math.abs(7 - data.newRook.y));
+            setPosition(piecePosition, { x: Math.abs(7 - data.oldRook.x), y: Math.abs(7 - data.oldRook.y) }, { x: Math.abs(7 - data.newRook.x), y: Math.abs(7 - data.newRook.y) }, data.myColor + 'R');
         }
     });
 
