@@ -5,18 +5,28 @@
         if (data.yourColor == 'Guest') {
             piecePosition = data.position;
             guestEvent();
+
+            $('#contents').text('당신은 관전자입니다.');
+            $('#Popup').center();
+            loadPopup();
         } else if (data.yourColor == 'B') {
             piecePosition = rotateBoard(data.position);
             OpponentEvent();
             dnd();
             enemyColor = data.opponentColor;
+
+            $('#contents').text('게임을 시작합니다.');
+            $('#Popup').center();
+            loadPopup();
         } else if (data.yourColor == 'W') {
             piecePosition = data.position;
             OpponentEvent();
             dnd();
             enemyColor = data.opponentColor;
 
-            setTimeout(function () { alert('주소를 공유해서 상대방을 초대하세요!'); }, 300);
+            $('#contents').text('주소를 공유해서 상대방을 초대하세요!');
+            $('#Popup').center();
+            loadPopup();
         }
 
         myColor = data.yourColor;
@@ -27,14 +37,21 @@
         if (myColor == 'W') {
             movePermission = true;
         }
+        $('#contents').text('상대방이 입장하였습니다. 게임을 시작합니다.');
+        $('#Popup').center();
+        loadPopup();
     });
 
     socket.on('check', function (data) {
-        alert('Check!');
+        $('#contents').text('Check!');
+        $('#Popup').center();
+        loadPopup();
     });
 
     socket.on('gameEnd', function (data) {
-        alert(data.reason + '!');
+        $('#contents').text(data + '!');
+        $('#Popup').center();
+        loadPopup();
     });
 
     socket.on('disconnect', function (data) {
@@ -88,19 +105,28 @@ function OpponentEvent() {
         if (_isCheck.bool) {
             if (isCheckmate(piecePosition, findMyKing(piecePosition), _isCheck.attacker)) {
                 movePermission = false;
-                alert('Checkmate!');
+
+                $('#contents').text('Checkmate!');
+                $('#Popup').center();
+                loadPopup();
 
                 socket.emit('gameEnd', { reason: 'Checkmate' });
             } else {
                 check = true;
-                alert('Check!');
+
+                $('#contents').text('Check!');
+                $('#Popup').center();
+                loadPopup();
 
                 socket.emit('check', {});
             }
         } else {
             if (isStalemate(piecePosition)) {
                 movePermission = false;
-                alert('Stalemate!');
+
+                $('#contents').text('Stalemate!');
+                $('#Popup').center();
+                loadPopup();
 
                 socket.emit('gameEnd', { reason: 'Stalemate' });
             } else {

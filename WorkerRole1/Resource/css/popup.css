@@ -1,0 +1,27 @@
+﻿#bgPopup {
+    display: none;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #000000;
+    z-index: 1;
+}
+
+#Popup {
+    display: none;
+    position: fixed;
+    background: #FFFFFF;
+    border: 2px thin #cecece;
+    z-index: 2;
+    padding: 30px;
+}
+
+    #Popup:hover {
+        cursor: pointer;
+    }
+
+#contents {
+    font-size: 20px;
+}

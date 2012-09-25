@@ -30,31 +30,37 @@ function init(room) {
         this.queenSideCastle = true;
         this.kingSideCastle = true;
 
-        
+
         dragDisable();
         setRayout();
         basicEvent();
+
+        $("#bgPopup").data("state", 0);
+        $("#Popup").on('click', function () { disablePopup(); });
+        $("#Popup").on('touchstart', function () { disablePopup(); });
     }
 }
 
 function setRayout() {
     if ($(window).width() > $(window).height() || $(window).width() >= 650) { // 가로모드
-        PIECE_SIZE = ($(window).height() / 8) < 55 ? ($(window).height() / 8) - 3 : 55;
+        PIECE_SIZE = ($(window).height() / 8) < 60 ? ($(window).height() / 8) - 3 : 60;
         BOARD_SIZE = PIECE_SIZE * 8;
 
+        $(record).css('padding', 10)
         $(record).css('marginLeft', 2);
         $(record).css('marginTop', 0);
         $(record).css('width', BOARD_SIZE / 3);
-        $(record).css('height', BOARD_SIZE);
+        $(record).css('height', BOARD_SIZE - ($(record).css('paddingLeft').replace('px', '') * 2));
 
         $(chessBoardDiv).css('width', 'auto');
     } else { // 세로모드
-        PIECE_SIZE = ($(window).width() / 8) < 55 ? ($(window).width() / 8) - 3 : 55;
+        PIECE_SIZE = ($(window).width() / 8) < 60 ? ($(window).width() / 8) - 3 : 60;
         BOARD_SIZE = PIECE_SIZE * 8;
 
+        $(record).css('padding', 10)
         $(record).css('marginLeft', 0);
         $(record).css('marginTop', 2);
-        $(record).css('width', BOARD_SIZE);
+        $(record).css('width', BOARD_SIZE - ($(record).css('paddingLeft').replace('px', '') * 2));
         $(record).css('height', BOARD_SIZE / 3);
 
         $(chessBoardDiv).css('width', $(record).outerWidth());

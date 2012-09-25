@@ -6,9 +6,11 @@
     <title>Our Chess! Realtime Multiplayer Game</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="/css/ourChess.css">
+    <link rel="stylesheet" type="text/css" href="/css/popup.css">
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/modernizr-1.6.min.js"></script>
+    <script src="/js/popup.js"></script>
     <script src="/js/checkAvailability.js"></script>
     <script src="/js/piecePosition.js"></script>
     <script src="/js/draw.js"></script>
@@ -26,5 +28,10 @@
         <canvas id="dragCanvas"></canvas>
         <textarea id="record" readonly="readonly"></textarea>
     </div>
+
+    <div id="Popup">
+        <span id="contents">This is my popup box</span>
+    </div>
+    <div id="bgPopup"></div>
 </body>
 </html>
