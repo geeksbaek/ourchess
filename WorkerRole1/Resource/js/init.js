@@ -15,6 +15,7 @@ function init(room) {
         this.record = document.getElementById('record');
 
         this.myColor;
+        this.enemyColor;
         this.movePermission = false;
 
         this.PIECE_SIZE;
@@ -28,6 +29,8 @@ function init(room) {
 
         this.check = false;
         this.castle = true;
+        this.queenSideCastle = true;
+        this.kingSideCastle = true;
 
         theCanvas.width = BOARD_SIZE;
         theCanvas.height = BOARD_SIZE;
@@ -68,13 +71,13 @@ function setResolution() {
         if ($(window).height() > 500) { // 데스크탑
             PIECE_SIZE = 55;
         } else { // 모바일
-            PIECE_SIZE = 30;
+            PIECE_SIZE = 40;
         }
     } else { // 세로모드
         if ($(window).width() > 700) { // 데스크탑
             PIECE_SIZE = 55;
         } else { // 모바일
-            PIECE_SIZE = 30;
+            PIECE_SIZE = 40;
             recordVisible = false;
         }
     }
