@@ -19,7 +19,7 @@
             setTimeout(function () { alert('주소를 공유해서 상대방을 초대하세요!'); }, 300);
         }
 
-        myColor = data.yourColor;        
+        myColor = data.yourColor;
         draw();
     });
 
@@ -61,27 +61,24 @@ function OpponentEvent() {
     });
 
     socket.on('dragStart_opponent', function (data) {
-        drawSquare(context, Math.abs(7 - data.drawSquare_x), Math.abs(7 - data.drawSquare_y));
-        drawPieceX(dragContext, data.drawPieceX_piece, 0, 0);
+        drawSquare(context, Math.abs(7 - data.drawSquare.x), Math.abs(7 - data.drawSquare.y));
+        drawPieceX(dragContext, data.piece, 0, 0);
         theDragCanvas.style.visibility = 'visible';
     });
 
     socket.on('drag_opponent', function (data) {
-        var leftMargin = 0 - (data.leftMargin * (PIECE_SIZE / data.PIECE_SIZE)) + (PIECE_SIZE * 7) + 8;
-        var topMargin = 0 - (data.topMargin * (PIECE_SIZE / data.PIECE_SIZE)) + (PIECE_SIZE * 7) + 8;
-
-        theDragCanvas.style.marginLeft = leftMargin + Number($(chessBoardDiv).offset().left) + (PIECE_SIZE / 2) + 'px';
-        theDragCanvas.style.marginTop = topMargin + Number($(chessBoardDiv).offset().top) + (PIECE_SIZE / 2) + 'px';
+        $(theDragCanvas).css('top', 0 - (data.top * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + (Number($(theCanvas).css('border-width').replace('px', '')) * 2));
+        $(theDragCanvas).css('left', 0 - (data.left * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + (Number($(theCanvas).css('border-width').replace('px', '')) * 2));
     });
 
     socket.on('dragEnd_opponent', function (data) {
         if (data.possible == false) {
-            drawPieceX(context, data.drawPiece_piece, Math.abs(7 - data.drawPiece_x), Math.abs(7 - data.drawPiece_y));
+            drawPieceX(context, data.piece, Math.abs(7 - data.point.x), Math.abs(7 - data.point.y));
         } else {
             oldPiecePosition = $.extend(true, [], piecePosition);
-            setPosition(piecePosition, { x: Math.abs(7 - data.setPosition_p_x), y: Math.abs(7 - data.setPosition_p_y) }, { x: Math.abs(7 - data.setPosition_getPosition_x), y: Math.abs(7 - data.setPosition_getPosition_y) }, data.setPosition_piece);
-            drawSquare(context, Math.abs(7 - data.drawPieceAndSquare_x), Math.abs(7 - data.drawPieceAndSquare_y)); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
-            drawPieceX(context, data.drawPieceAndSquare_piece, Math.abs(7 - data.drawPieceAndSquare_x), Math.abs(7 - data.drawPieceAndSquare_y));
+            setPosition(piecePosition, { x: Math.abs(7 - data.start.x), y: Math.abs(7 - data.start.y) }, { x: Math.abs(7 - data.end.x), y: Math.abs(7 - data.end.y) }, data.piece);
+            drawSquare(context, Math.abs(7 - data.end.x), Math.abs(7 - data.end.y)); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
+            drawPieceX(context, data.piece, Math.abs(7 - data.end.x), Math.abs(7 - data.end.y));
         }
 
         theDragCanvas.style.visibility = 'hidden';
@@ -138,45 +135,42 @@ function guestEvent() {
 
     socket.on('dragStart_guest', function (data) {
         if (data.myColor == 'W') { // 백의 이동에 대한 게스트 보드의 움직임
-            drawSquare(context, data.drawSquare_x, data.drawSquare_y);
-            drawPieceX(dragContext, data.drawPieceX_piece, 0, 0);
+            drawSquare(context, data.drawSquare.x, data.drawSquare.y);
+            drawPieceX(dragContext, data.piece, 0, 0);
             theDragCanvas.style.visibility = 'visible';
         } else if (data.myColor == 'B') { // 흑의 이동에 대한 게스트 보드의 움직임
-            drawSquare(context, Math.abs(7 - data.drawSquare_x), Math.abs(7 - data.drawSquare_y));
-            drawPieceX(dragContext, data.drawPieceX_piece, 0, 0);
+            drawSquare(context, Math.abs(7 - data.drawSquare.x), Math.abs(7 - data.drawSquare.y));
+            drawPieceX(dragContext, data.piece, 0, 0);
             theDragCanvas.style.visibility = 'visible';
         }
     });
 
     socket.on('drag_guest', function (data) {
         if (data.myColor == 'W') { // 백의 이동에 대한 게스트 보드의 움직임
-            theDragCanvas.style.marginLeft = (data.leftMargin * (PIECE_SIZE / data.PIECE_SIZE)) + Number($(chessBoardDiv).offset().left) - (PIECE_SIZE / 2) + 'px';
-            theDragCanvas.style.marginTop = (data.topMargin * (PIECE_SIZE / data.PIECE_SIZE)) + Number($(chessBoardDiv).offset().top) - (PIECE_SIZE / 2) + 'px';
+            $(theDragCanvas).css('top', (data.top * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2));
+            $(theDragCanvas).css('left', (data.left * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2));
         } else if (data.myColor == 'B') { // 흑의 이동에 대한 게스트 보드의 움직임
-            var leftMargin = 0 - (data.leftMargin * (PIECE_SIZE / data.PIECE_SIZE)) + (PIECE_SIZE * 7) + 8;
-            var topMargin = 0 - (data.topMargin * (PIECE_SIZE / data.PIECE_SIZE)) + (PIECE_SIZE * 7) + 8;
-
-            theDragCanvas.style.marginLeft = leftMargin + Number($(chessBoardDiv).offset().left) + (PIECE_SIZE / 2) + 'px';
-            theDragCanvas.style.marginTop = topMargin + Number($(chessBoardDiv).offset().top) + (PIECE_SIZE / 2) + 'px';
+            $(theDragCanvas).css('top', 0 - (data.top * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + (Number($(theCanvas).css('border-width').replace('px', '')) * 2));
+            $(theDragCanvas).css('left', 0 - (data.left * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + (Number($(theCanvas).css('border-width').replace('px', '')) * 2));
         }
     });
 
     socket.on('dragEnd_guest', function (data) {
         if (data.myColor == 'W') { // 백의 이동에 대한 게스트 보드의 움직임
             if (data.possible == false) {
-                drawPieceX(context, data.drawPiece_piece, data.drawPiece_x, data.drawPiece_y);
+                drawPieceX(context, data.piece, data.point.x, data.point.y);
             } else {
-                setPosition(piecePosition, { x: data.setPosition_p_x, y: data.setPosition_p_y }, { x: data.setPosition_getPosition_x, y: data.setPosition_getPosition_y }, data.setPosition_piece);
-                drawSquare(context, data.drawPieceAndSquare_x, data.drawPieceAndSquare_y); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
-                drawPieceX(context, data.drawPieceAndSquare_piece, data.drawPieceAndSquare_x, data.drawPieceAndSquare_y);
+                setPosition(piecePosition, data.start, data.end, data.piece);
+                drawSquare(context, data.end.x, data.end.y); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
+                drawPieceX(context, data.piece, data.end.x, data.end.y);
             }
         } else if (data.myColor == 'B') { // 흑의 이동에 대한 게스트 보드의 움직임
             if (data.possible == false) {
-                drawPieceX(context, data.drawPiece_piece, Math.abs(7 - data.drawPiece_x), Math.abs(7 - data.drawPiece_y));
+                drawPieceX(context, data.piece, Math.abs(7 - data.point.x), Math.abs(7 - data.point.y));
             } else {
-                setPosition(piecePosition, { x: Math.abs(7 - data.setPosition_p_x), y: Math.abs(7 - data.setPosition_p_y) }, { x: Math.abs(7 - data.setPosition_getPosition_x), y: Math.abs(7 - data.setPosition_getPosition_y) }, data.setPosition_piece);
-                drawSquare(context, Math.abs(7 - data.drawPieceAndSquare_x), Math.abs(7 - data.drawPieceAndSquare_y)); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
-                drawPieceX(context, data.drawPieceAndSquare_piece, Math.abs(7 - data.drawPieceAndSquare_x), Math.abs(7 - data.drawPieceAndSquare_y));
+                setPosition(piecePosition, { x: Math.abs(7 - data.start.x), y: Math.abs(7 - data.start.y) }, { x: Math.abs(7 - data.end.x), y: Math.abs(7 - data.end.y) }, data.piece);
+                drawSquare(context, Math.abs(7 - data.end.x), Math.abs(7 - data.end.y)); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
+                drawPieceX(context, data.piece, Math.abs(7 - data.end.x), Math.abs(7 - data.end.y));
             }
         }
 

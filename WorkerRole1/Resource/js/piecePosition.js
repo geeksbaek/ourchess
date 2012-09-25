@@ -3,29 +3,26 @@
     position[end.y][end.x] = piece;
 }
 
-function getPosition(p) {
-    if (!isInBoard(p)) {
+function getPosition(point) {
+    if (!isInBoard(point)) {
         return false;
     }
 
-    var x = Math.floor(p.x);
-    var y = Math.floor(p.y) % 8;
-
     return {
-        piece: piecePosition[y][x],
-        p: { x: x, y: y },
-        isEmpty: piecePosition[y][x] == '' ? true : false
+        piece: piecePosition[point.y][point.x],
+        point: { x: point.x, y: point.y },
+        isEmpty: piecePosition[point.y][point.x] == '' ? true : false
     }
 }
 
 function getPointXY(event) {
     return {
-        x: (event.pageX - $(theCanvas).position().left) / PIECE_SIZE,
-        y: (event.pageY - $(theCanvas).position().top) / PIECE_SIZE
+        x: Math.floor((event.pageX - $(theCanvas).offset().left - Number($(theCanvas).css('border-width').replace('px', ''))) / PIECE_SIZE),
+        y: Math.floor((event.pageY - $(theCanvas).offset().top - Number($(theCanvas).css('border-width').replace('px', ''))) / PIECE_SIZE)
     };
 }
 
 function setPointXY(event) {
-    theDragCanvas.style.marginLeft = (event.clientX - (PIECE_SIZE / 2)) + 'px';
-    theDragCanvas.style.marginTop = (event.clientY - (PIECE_SIZE / 2)) + 'px';    
+    $(theDragCanvas).css('left', event.clientX - (PIECE_SIZE / 2) - $(theCanvas).offset().left);
+    $(theDragCanvas).css('top', event.clientY - (PIECE_SIZE / 2) - $(theCanvas).offset().top);
 }

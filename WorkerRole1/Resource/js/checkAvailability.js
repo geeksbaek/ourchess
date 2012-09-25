@@ -1,8 +1,8 @@
 ﻿function isDragPossible(event) {
-    var nowPoint = getPointXY(event);
-    var nowObj = getPosition(nowPoint);
+    var startPoint = getPointXY(event);
+    var startPiece = getPosition(startPoint);
 
-    if (!isInBoard(nowPoint)) {
+    if (!isInBoard(startPoint)) {
         return false;
     }
 
@@ -10,41 +10,41 @@
         return false;
     }
 
-    if (nowObj.piece.charAt(0) != myColor) {
+    if (startPiece.piece.charAt(0) != myColor) {
         return false;
     }
 
-    if (nowObj.piece == '') {
+    if (startPiece.piece == '') {
         return false;
     }
 
-    return [nowPoint, nowObj];
+    return startPiece;
 }
 
 function isDropPossible(event) {
-    var nowPoint = getPointXY(event);
-    var nowObj = getPosition(nowPoint);
+    var endPoint = getPointXY(event);
+    var endPiece = getPosition(endPoint);
 
-    if (!isInBoard(nowPoint)) {
+    if (!isInBoard(endPoint)) {
         return false;
     }
 
-    if (dragObj.piece.charAt(0) == nowObj.piece.charAt(0)) {
+    if (dragObj.piece.charAt(0) == endPiece.piece.charAt(0)) {
         return false;
     }
 
-    if (!isRightRule(dragObj.piece.charAt(1), nowPoint)) {
+    if (!isRightRule(dragObj.piece.charAt(1), endPoint)) {
         return false;
     }
 
     var previewPosition = $.extend(true, [], piecePosition);
-    setPosition(previewPosition, dragObj.p, getPosition(nowPoint).p, dragObj.piece);
+    setPosition(previewPosition, dragObj.point, endPoint, dragObj.piece);
 
     if (itCanBeAttackedOrDepended(previewPosition, findMyKing(previewPosition)).bool) {
         return false;
     }
 
-    return nowPoint;
+    return endPoint;
 }
 
 function isInBoard(p) {
@@ -55,11 +55,11 @@ function isInBoard(p) {
     }
 }
 
-function isRightRule(piece, endP) {
+function isRightRule(piece, endPoint) {
     var result = true;
     var pointArgs = {
-        start: { x: dragObj.p.x, y: dragObj.p.y },
-        end: { x: Math.floor(endP.x), y: Math.floor(endP.y) }
+        start: dragObj.point,
+        end: endPoint
     }
 
     switch (piece) {
@@ -294,7 +294,7 @@ function castleCheck(start, end) {
 
         for (var i = myColor == 'W' ? 2 : 5; myColor == 'W' ? i < start.x : i > start.x; myColor == 'W' ? i++ : i--) {
             var previewPosition = $.extend(true, [], piecePosition);
-            setPosition(previewPosition, dragObj.p, { x: i, y: start.y }, dragObj.piece);
+            setPosition(previewPosition, dragObj.point, { x: i, y: start.y }, dragObj.piece);
 
             if (itCanBeAttackedOrDepended(previewPosition, findMyKing(previewPosition)).bool) {
                 return false;
@@ -322,7 +322,7 @@ function castleCheck(start, end) {
             }
 
             var previewPosition = $.extend(true, [], piecePosition);
-            setPosition(previewPosition, dragObj.p, { x: i, y: start.y }, dragObj.piece);
+            setPosition(previewPosition, dragObj.point, { x: i, y: start.y }, dragObj.piece);
 
             if (itCanBeAttackedOrDepended(previewPosition, findMyKing(previewPosition)).bool) {
                 return false;

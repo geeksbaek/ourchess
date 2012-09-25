@@ -11,8 +11,8 @@ function init(room) {
         this.theDragCanvas = document.getElementById('dragCanvas');
         this.dragContext = theDragCanvas.getContext('2d');
 
-        this.chessBoardDiv = document.getElementById('chessBoard');
-        this.record = document.getElementById('record');
+        this.chessBoardDiv = $('#chessBoard');
+        this.record = $('#record');
 
         this.myColor;
         this.enemyColor;
@@ -21,8 +21,6 @@ function init(room) {
         this.PIECE_SIZE;
         this.BOARD_SIZE;
 
-        setResolution();
-        
         this.oldPiecePosition;
         this.piecePosition;
         this.dragObj;
@@ -32,66 +30,57 @@ function init(room) {
         this.queenSideCastle = true;
         this.kingSideCastle = true;
 
-        theCanvas.width = BOARD_SIZE;
-        theCanvas.height = BOARD_SIZE;
-
-        theDragCanvas.width = PIECE_SIZE;
-        theDragCanvas.height = PIECE_SIZE;
-
-        this.canvasBorder = window.getComputedStyle(theCanvas, null).getPropertyValue('border-top-width').replace(/[^0-9]/g, '');
-
-        this.chessBoardDivMarginTop = (window.innerHeight / 2) - (chessBoardDiv.offsetHeight / 2);
-        this.chessBoardDivMarginLeft = (window.innerWidth / 2) - (chessBoardDiv.offsetWidth / 2);
-
-        chessBoardDiv.style.marginTop = chessBoardDivMarginTop + 'px';
-        chessBoardDiv.style.marginLeft = chessBoardDivMarginLeft + 'px';
-
-        window.addEventListener('resize', function () {
-            chessBoardDivMarginTop = (window.innerHeight / 2) - (chessBoardDiv.offsetHeight / 2);
-            chessBoardDivMarginLeft = (window.innerWidth / 2) - (chessBoardDiv.offsetWidth / 2);
-            chessBoardDiv.style.marginTop = chessBoardDivMarginTop + 'px';
-            chessBoardDiv.style.marginLeft = chessBoardDivMarginLeft + 'px';
-            setResolution();
-        }, false);
-
-        document.onselectstart = new Function('return false');
-
+        
+        dragDisable();
+        setRayout();
         basicEvent();
     }
 }
 
-function saveImage() {
-    window.open(theCanvas.toDataURL(), '', 'width=' + BOARD_SIZE + ', height=' + BOARD_SIZE);
+function setRayout() {
+    if ($(window).width() > $(window).height() || $(window).width() >= 650) { // 가로모드
+        PIECE_SIZE = ($(window).height() / 8) < 55 ? ($(window).height() / 8) - 3 : 55;
+        BOARD_SIZE = PIECE_SIZE * 8;
+
+        $(record).css('marginLeft', 2);
+        $(record).css('marginTop', 0);
+        $(record).css('width', BOARD_SIZE / 3);
+        $(record).css('height', BOARD_SIZE);
+
+        $(chessBoardDiv).css('width', 'auto');
+    } else { // 세로모드
+        PIECE_SIZE = ($(window).width() / 8) < 55 ? ($(window).width() / 8) - 3 : 55;
+        BOARD_SIZE = PIECE_SIZE * 8;
+
+        $(record).css('marginLeft', 0);
+        $(record).css('marginTop', 2);
+        $(record).css('width', BOARD_SIZE);
+        $(record).css('height', BOARD_SIZE / 3);
+
+        $(chessBoardDiv).css('width', $(record).outerWidth());
+    }
+
+    $(record).css('marginRight', 0);
+    $(record).css('marginBottom', 0);
+
+    if (typeof myColor === 'undefined') {
+        theCanvas.width = BOARD_SIZE; // 캔버스 고유 API인 모양, jQuery의 css 메소드로 설정하면 캔버스가 깨짐
+        theCanvas.height = BOARD_SIZE;
+
+        theDragCanvas.width = PIECE_SIZE;
+        theDragCanvas.height = PIECE_SIZE;
+    }
+
+    $(chessBoardDiv).center();
 }
 
-function setResolution() {
-    var recordVisible = true;
+jQuery.fn.center = function () {
+    this.css("position", "absolute");
+    this.css("top", Math.max(0, (($(window).height() - this.outerHeight()) / 2) + $(window).scrollTop()));
+    this.css("left", Math.max(0, (($(window).width() - this.outerWidth()) / 2) + $(window).scrollLeft()));
+}
 
-    if ($(window).width() > $(window).height()) { // 가로모드
-        if ($(window).height() > 500) { // 데스크탑
-            PIECE_SIZE = 55;
-        } else { // 모바일
-            PIECE_SIZE = 30;
-        }
-    } else { // 세로모드
-        if ($(window).width() > 700) { // 데스크탑
-            PIECE_SIZE = 55;
-        } else { // 모바일
-            PIECE_SIZE = 30;
-            recordVisible = false;
-        }
-    }
-
-    BOARD_SIZE = PIECE_SIZE * 8;
-
-    var padding = record.style.padding = '10px';
-    record.style.pixelWidth = BOARD_SIZE / 3;
-    record.style.pixelHeight = BOARD_SIZE - (padding.replace('px', '') * 2);
-    record.value = 'todo.' + '\n' + '체크메이트 여부 검사' + '\n' + '반응형 해상도 구현' + '\n' + '디자인 개선';
-
-    if (recordVisible) {
-        $('#record').show();
-    } else {
-        $('#record').hide();
-    }
+function dragDisable() {
+    var t_preventDefault = function (evt) { evt.preventDefault(); };
+    $(document).bind('dragstart', t_preventDefault).bind('selectstart', t_preventDefault);
 }
