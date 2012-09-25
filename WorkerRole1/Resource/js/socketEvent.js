@@ -54,6 +54,15 @@
         loadPopup();
     });
 
+    socket.on('error', function (data) {
+        $('#contents').text(data.reason + '\n' + '잠시 후 이전 페이지로 이동합니다.');
+        $('#Popup').center();
+        loadPopup(function () {
+            setTimeout(function () { parent.history.back(); }, 5000);
+            return false;
+        });
+    });
+
     socket.on('disconnect', function (data) {
         // alert('서버와의 연결이 끊겼습니다.');
     });

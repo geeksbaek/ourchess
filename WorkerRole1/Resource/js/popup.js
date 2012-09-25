@@ -1,10 +1,14 @@
-﻿function loadPopup() {
+﻿function loadPopup(callback) {
     //loads popup only if it is disabled  
     if ($("#bgPopup").data("state") == 0) {
         $("#bgPopup").css({ "opacity": "0.7" });
         $("#bgPopup").fadeIn("medium");
         $("#Popup").fadeIn("medium");
         $("#bgPopup").data("state", 1);
+
+        if (typeof callback != 'undefined') {
+            callback();
+        }
     }
 }
 

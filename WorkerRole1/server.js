@@ -73,8 +73,7 @@ io.sockets.on('connection', function (socket) {
                 console.log('[' + data + '] ' + 'Guest Player Joining.');
             }
         } catch (e) {
-            socket.disconnect();
-            console.log(data + ' ' + e);
+            socket.emit('error', { reason: '방이 존재하지 않습니다.' });
         }
     });
 
