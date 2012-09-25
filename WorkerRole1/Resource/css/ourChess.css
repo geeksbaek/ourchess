@@ -5,10 +5,10 @@
 }
 
 #chessBoard {
-    display: table;
 }
 
 #canvas {
+    float: left;
     border: solid 4px #000000;
 }
 
@@ -20,6 +20,7 @@
 }
 
 #record {
+    float: right;
     resize: none;
     border: solid 4px #000000;
     background-color: whitesmoke;

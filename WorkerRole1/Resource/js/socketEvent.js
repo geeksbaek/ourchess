@@ -67,8 +67,8 @@ function OpponentEvent() {
     });
 
     socket.on('drag_opponent', function (data) {
-        $(theDragCanvas).css('top', 0 - (data.top * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + (Number($(theCanvas).css('border-width').replace('px', '')) * 2));
-        $(theDragCanvas).css('left', 0 - (data.left * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + (Number($(theCanvas).css('border-width').replace('px', '')) * 2));
+        $(theDragCanvas).css('top', 0 - (data.top * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + ($(theCanvas).outerWidth() - $(theCanvas).width()));
+        $(theDragCanvas).css('left', 0 - (data.left * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + ($(theCanvas).outerWidth() - $(theCanvas).width()));
     });
 
     socket.on('dragEnd_opponent', function (data) {
@@ -150,8 +150,8 @@ function guestEvent() {
             $(theDragCanvas).css('top', (data.top * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2));
             $(theDragCanvas).css('left', (data.left * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2));
         } else if (data.myColor == 'B') { // 흑의 이동에 대한 게스트 보드의 움직임
-            $(theDragCanvas).css('top', 0 - (data.top * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + (Number($(theCanvas).css('border-width').replace('px', '')) * 2));
-            $(theDragCanvas).css('left', 0 - (data.left * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + (Number($(theCanvas).css('border-width').replace('px', '')) * 2));
+            $(theDragCanvas).css('top', 0 - (data.top * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + ($(theCanvas).outerWidth() - $(theCanvas).width()));
+            $(theDragCanvas).css('left', 0 - (data.left * (PIECE_SIZE / data.PIECE_SIZE)) - (PIECE_SIZE / 2) + (PIECE_SIZE * 8) + ($(theCanvas).outerWidth() - $(theCanvas).width()));
         }
     });
 
