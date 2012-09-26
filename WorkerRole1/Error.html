@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes" />
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script>
-        $(window).load(setImage);
+        $(window).load(function () {
+            setImage();
+            $('body').hide();
+            $('body').fadeIn(300);
+        });
         $(window).resize(setImage);
 
         function setImage() {
@@ -27,6 +31,8 @@
     <title>404 Not Found</title>
 </head>
 <body>
-    <img id="errorImage" src="/img/troll-sad-troll-face.png" />
+    <div id="errorImageDiv">
+        <img id="errorImage" src="/img/troll-sad-troll-face.png" />
+    </div>
 </body>
 </html>
