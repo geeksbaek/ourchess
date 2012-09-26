@@ -10,7 +10,7 @@
             $('#Popup').center();
             loadPopup();
 
-            socket.emit('sendMessage', { name: 'Server', message: '게스트 입장' });
+            socket.emit('sendMessage', { name: 'Server', message: 'Guest 입장' });
         } else if (data.yourColor == 'B') {
             piecePosition = rotateBoard(data.position);
             OpponentEvent();
@@ -37,6 +37,8 @@
 
         myColor = data.yourColor;
         draw();
+
+        $('#chessBoard').fadeIn(300);
     });
 
     socket.on('gameStart', function (data) {
@@ -55,27 +57,22 @@
     });
 
     socket.on('gameEnd', function (data) {
-        $('#contents').text(data.reason + '!');
+        $('#contents').text(data);
         $('#Popup').center();
         loadPopup();
+
+        movePermission = false;
+
+        socket.emit('sendMessage', { name: 'Server', message: '게임이 종료되었습니다.' });
     });
 
     socket.on('error', function (data) {
-        $('#contents').text(data.reason + '\n' + '잠시 후 이전 페이지로 이동합니다.');
-        $('#Popup').center();
-        loadPopup(function () {
-            setTimeout(function () { parent.history.back(); }, 5000);
-            return false;
-        });
+        location = '/Error';
     });
 
     socket.on('chatMessage', function (data) {
         $(record).text($(record).text() + data.name + ': ' + data.message + '\n');
         $(record).scrollTop($(record)[0].scrollHeight);
-    });
-
-    socket.on('disconnect', function (data) {
-        // alert('서버와의 연결이 끊겼습니다.');
     });
 }
 
@@ -125,7 +122,7 @@ function OpponentEvent() {
         if (_isCheck.bool) {
             if (isCheckmate(piecePosition, findMyKing(piecePosition), _isCheck.attacker)) {
                 movePermission = false;
-                socket.emit('gameEnd', { reason: 'Checkmate' });
+                socket.emit('gameEnd', 'Checkmate!');
             } else {
                 check = true;
                 socket.emit('check', {});
@@ -133,7 +130,7 @@ function OpponentEvent() {
         } else {
             if (isStalemate(piecePosition)) {
                 movePermission = false;
-                socket.emit('gameEnd', { reason: 'Stalemate' });
+                socket.emit('gameEnd', 'Stalemate!');
             } else {
                 check = false;
             }

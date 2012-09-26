@@ -26,6 +26,13 @@ server.use(connect.router(function (app) {
         });
     });
 
+    app.get('/Error', function (request, response) {
+        fs.readFile('Error.html', function (error, data) {
+            response.writeHead(200, { 'Content-Type': 'text/html' });
+            response.end(data);
+        });
+    });
+
     app.get('/chess/:room', function (request, response) {
         fs.readFile('OurChess.html', 'utf8', function (error, data) {
             response.writeHead(200, { 'Content-Type': 'text/html' });
@@ -60,21 +67,16 @@ io.sockets.on('connection', function (socket) {
 
             if (roomArray[data].count == 1) {
                 socket.emit('id', { yourColor: 'W', opponentColor: 'B', position: roomArray[data].position });
-                console.log('[' + data + '] ' + 'White Player Joining. Waiting for opponent..');
             } else if (roomArray[data].count == 2) {
                 socket.emit('id', { yourColor: 'B', opponentColor: 'W', position: roomArray[data].position });
-                socket.get('room', function (error, room) {
-                    socket.broadcast.to(room).emit('gameStart', true);
-                });
-                console.log('[' + data + '] ' + 'Black Player Joining. Game Start!');
+                socket.broadcast.to(data).emit('gameStart', true);
             } else {
                 socket.emit('id', { yourColor: 'Guest', position: roomArray[data].position });
                 roomArray[data].guest++;
-                console.log('[' + data + '] ' + 'Guest Player Joining.');
             }
         } catch (e) {
             console.log(e);
-            socket.emit('error', { reason: '방이 존재하지 않습니다.' });
+            socket.emit('error');
         }
     });
 
@@ -149,7 +151,25 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
-    socket.on('disconnect', function () {
-        console.log('disconnect');
+    socket.on('leave', function (data) {
+        socket.get('room', function (error, room) {
+            socket.leave(room);
+
+            try {
+                roomArray[room].count--;
+            } catch (e) {
+                console.log(e);
+            }
+
+            if (data == 'B') {
+                io.sockets.in(room).emit('gameEnd', 'Black이 접속을 종료했습니다. 게임이 종료됩니다.');
+                roomArray[room] = undefined;
+            } else if (data == 'W') {
+                io.sockets.in(room).emit('gameEnd', 'White가 접속을 종료했습니다. 게임이 종료됩니다.');
+                roomArray[room] = undefined;
+            } else {
+                io.sockets.in(room).emit('chatMessage', { name: 'Server', message: 'Guest 퇴장' });
+            }
+        });
     });
 });

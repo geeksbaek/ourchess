@@ -21,6 +21,7 @@
     <script>
         $(window).load(function () { init('<%= room %>'); });
         $(window).resize(function () { $(chessBoardDiv).center(); $('#Popup').center(); });
+        $(window).bind('beforeunload', function () { socket.emit('leave', myColor) });
     </script> 
 </head> 
 <body> 

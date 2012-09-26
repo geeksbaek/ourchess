@@ -1,8 +1,10 @@
 function init(room) {
+    this.socket = io.connect();
+    $('#chessBoard').hide();
+
     if (!Modernizr.canvas) {
-        return;
+        location = '/Error';
     } else {
-        this.socket = io.connect();
         this.room = room;
 
         this.theCanvas = document.getElementById('canvas');
@@ -30,7 +32,6 @@ function init(room) {
         this.queenSideCastle = true;
         this.kingSideCastle = true;
 
-
         dragDisable();
         setRayout();
         basicEvent();
@@ -45,6 +46,7 @@ function init(room) {
                 $('#chat>input').val('');
             }
         });
+
     }
 }
 
@@ -107,4 +109,3 @@ function dragDisable() {
     var t_preventDefault = function (evt) { evt.preventDefault(); };
     $(document).bind('dragstart', t_preventDefault).bind('selectstart', t_preventDefault);
 }
-
