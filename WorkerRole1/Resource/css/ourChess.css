@@ -1,7 +1,6 @@
 ﻿* {
     font-family: 'Malgun Gothic';
     font-size: 12px;
-    padding: 0 0 0 0;
 }
 
 #chessBoard {
@@ -19,11 +18,19 @@
     top: 0;
 }
 
-#record {
+#chat {
     float: right;
+}
+
+#record {
     resize: none;
     border: solid 4px #000000;
     background-color: whitesmoke;
+}
+
+#chat > input {
+    clear:both;
+    border: solid 4px #000000;
 }
 
 body {

@@ -9,6 +9,8 @@
             $('#contents').text('당신은 관전자입니다.');
             $('#Popup').center();
             loadPopup();
+
+            socket.emit('sendMessage', { name: 'Server', message: '게스트 입장' });
         } else if (data.yourColor == 'B') {
             piecePosition = rotateBoard(data.position);
             OpponentEvent();
@@ -18,6 +20,8 @@
             $('#contents').text('게임을 시작합니다.');
             $('#Popup').center();
             loadPopup();
+
+            socket.emit('sendMessage', { name: 'Server', message: 'Black 입장' });
         } else if (data.yourColor == 'W') {
             piecePosition = data.position;
             OpponentEvent();
@@ -27,6 +31,8 @@
             $('#contents').text('주소를 공유해서 상대방을 초대하세요!');
             $('#Popup').center();
             loadPopup();
+
+            socket.emit('sendMessage', { name: 'Server', message: 'White 입장' });
         }
 
         myColor = data.yourColor;
@@ -49,7 +55,7 @@
     });
 
     socket.on('gameEnd', function (data) {
-        $('#contents').text(data + '!');
+        $('#contents').text(data.reason + '!');
         $('#Popup').center();
         loadPopup();
     });
@@ -61,6 +67,11 @@
             setTimeout(function () { parent.history.back(); }, 5000);
             return false;
         });
+    });
+
+    socket.on('chatMessage', function (data) {
+        $(record).text($(record).text() + data.name + ': ' + data.message + '\n');
+        $(record).scrollTop($(record)[0].scrollHeight);
     });
 
     socket.on('disconnect', function (data) {
@@ -114,29 +125,14 @@ function OpponentEvent() {
         if (_isCheck.bool) {
             if (isCheckmate(piecePosition, findMyKing(piecePosition), _isCheck.attacker)) {
                 movePermission = false;
-
-                $('#contents').text('Checkmate!');
-                $('#Popup').center();
-                loadPopup();
-
                 socket.emit('gameEnd', { reason: 'Checkmate' });
             } else {
                 check = true;
-
-                $('#contents').text('Check!');
-                $('#Popup').center();
-                loadPopup();
-
                 socket.emit('check', {});
             }
         } else {
             if (isStalemate(piecePosition)) {
                 movePermission = false;
-
-                $('#contents').text('Stalemate!');
-                $('#Popup').center();
-                loadPopup();
-
                 socket.emit('gameEnd', { reason: 'Stalemate' });
             } else {
                 check = false;

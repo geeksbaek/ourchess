@@ -73,6 +73,7 @@ io.sockets.on('connection', function (socket) {
                 console.log('[' + data + '] ' + 'Guest Player Joining.');
             }
         } catch (e) {
+            console.log(e);
             socket.emit('error', { reason: '방이 존재하지 않습니다.' });
         }
     });
@@ -99,7 +100,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('addroom', function (data) {
-        roomArray[data] = roomArray[data] ? roomArray[data] : { count: 0, position: piecePosition };
+        roomArray[data] = roomArray[data] || { count: 0, position: piecePosition };
     });
 
     socket.on('positionUpdate', function (data) {
@@ -132,13 +133,19 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('check', function (data) {
         socket.get('room', function (error, room) {
-            socket.broadcast.to(room).emit('check', data);
+            io.sockets.in(room).emit('check', data);
         });
     });
 
     socket.on('gameEnd', function (data) {
         socket.get('room', function (error, room) {
-            socket.broadcast.to(room).emit('gameEnd', data);
+            io.sockets.in(room).emit('gameEnd', data);
+        });
+    });
+
+    socket.on('sendMessage', function (data) {
+        socket.get('room', function (error, room) {
+            io.sockets.in(room).emit('chatMessage', data);
         });
     });
 

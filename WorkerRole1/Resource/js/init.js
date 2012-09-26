@@ -38,6 +38,13 @@ function init(room) {
         $("#bgPopup").data("state", 0);
         $("#Popup").on('click', function () { disablePopup(); });
         $("#Popup").on('touchstart', function () { disablePopup(); });
+
+        $('#chat>input').keyup(function (e) {
+            if (e.keyCode == 13 && $('#chat>input').val() != '') {
+                socket.emit('sendMessage', { name: myColor == 'W' ? 'White' : myColor == 'B' ? 'Black' : 'Guest', message: $('#chat>input').val() });
+                $('#chat>input').val('');
+            }
+        });
     }
 }
 
@@ -47,10 +54,12 @@ function setRayout() {
         BOARD_SIZE = PIECE_SIZE * 8;
 
         $(record).css('padding', 10)
-        $(record).css('marginLeft', 2);
-        $(record).css('marginTop', 0);
         $(record).css('width', BOARD_SIZE / 3);
-        $(record).css('height', BOARD_SIZE - ($(record).css('paddingLeft').replace('px', '') * 2));
+        $(record).css('height', BOARD_SIZE - ($(record).css('paddingLeft').replace('px', '') * 2) - 50);
+
+        $('#chat').css('width', $(record).outerWidth());
+        $('#chat').css('marginLeft', 2);
+        $('#chat').css('marginTop', 0);
 
         $(chessBoardDiv).css('width', 'auto');
     } else { // 세로모드
@@ -58,13 +67,20 @@ function setRayout() {
         BOARD_SIZE = PIECE_SIZE * 8;
 
         $(record).css('padding', 10)
-        $(record).css('marginLeft', 0);
-        $(record).css('marginTop', 2);
         $(record).css('width', BOARD_SIZE - ($(record).css('paddingLeft').replace('px', '') * 2));
         $(record).css('height', BOARD_SIZE / 3);
 
+        $('#chat').css('width', $(record).outerWidth());
+        $('#chat').css('marginLeft', 0);
+        $('#chat').css('marginTop', 2);
+
         $(chessBoardDiv).css('width', $(record).outerWidth());
     }
+
+    $('#chat>input').css('marginTop', 0);
+    $('#chat>input').css('padding', 5)
+    $('#chat>input').css('width', $(record).outerWidth() - 18);
+    $('#chat>input').css('height', 29);
 
     $(record).css('marginRight', 0);
     $(record).css('marginBottom', 0);
@@ -91,3 +107,4 @@ function dragDisable() {
     var t_preventDefault = function (evt) { evt.preventDefault(); };
     $(document).bind('dragstart', t_preventDefault).bind('selectstart', t_preventDefault);
 }
+
