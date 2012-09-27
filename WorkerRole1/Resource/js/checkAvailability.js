@@ -592,13 +592,15 @@ function isCheckmate(position, king, attacker) {
         }
         return { bool: true, reason: '11' };
     }
+
+    return { bool: false };
 }
 
 function isStalemate(position) {
     function isAbleToMoveSomeone(_x, _y) {
         if (position[_y][_x].charAt(0) != myColor) {
             var previewPosition = $.extend(true, [], position);
-            setPosition(previewPosition, { x: x, y: y }, { x: _x, y: _y }, piece);
+            setPosition(previewPosition, { x: x, y: y }, { x: _x, y: _y }, position[y][x]);
             if (!isDengerousOrSafe(previewPosition, findMyKing(previewPosition)).bool) { return false; }
         }
     }
