@@ -87,6 +87,7 @@ function mouseUpEvent(event) {
 
         // ео а╬╥А
         socket.emit('endOfTurn', myColor);
+        socket.emit('playSound', 'move');
         movePermission = false;
     }
 

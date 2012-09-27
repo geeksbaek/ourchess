@@ -32,6 +32,9 @@ function init(room) {
         this.queenSideCastle = true;
         this.kingSideCastle = true;
 
+        this.audioElement = document.createElement('audio');
+        document.body.appendChild(audioElement);
+
         dragDisable();
         setRayout();
         basicEvent();

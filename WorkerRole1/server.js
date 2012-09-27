@@ -151,6 +151,12 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    socket.on('playSound', function (data) {
+        socket.get('room', function (error, room) {
+            io.sockets.in(room).emit('playSoundGuys', data);
+        });
+    });
+
     socket.on('leave', function (data) {
         socket.get('room', function (error, room) {
             socket.leave(room);

@@ -75,6 +75,11 @@
         $(record).text($(record).text() + data.name + ': ' + data.message + '\n');
         $(record).scrollTop($(record)[0].scrollHeight);
     });
+
+    socket.on('playSoundGuys', function (data) {
+        audioElement.setAttribute('src', '/sound/' + data + 'Sound' + (Math.floor(Math.random() * 5)) + '.mp3');
+        audioElement.play();
+    });
 }
 
 function OpponentEvent() {
