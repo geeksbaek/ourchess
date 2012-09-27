@@ -124,9 +124,9 @@ function OpponentEvent() {
         theDragCanvas.style.visibility = 'hidden';
         dragContext.clearRect(0, 0, theDragCanvas.width, theDragCanvas.height);
 
-        var _isCheck = itCanBeAttackedOrDepended(piecePosition, findMyKing(piecePosition));
+        var _isCheck = isDengerousOrSafe(piecePosition, findMyKing(piecePosition));
         if (_isCheck.bool) {
-            if (isCheckmate(piecePosition, findMyKing(piecePosition), _isCheck.attacker)) {
+            if (isCheckmate(piecePosition, findMyKing(piecePosition), _isCheck.attacker).bool) {
                 movePermission = false;
                 socket.emit('gameEnd', 'Checkmate!');
             } else {
