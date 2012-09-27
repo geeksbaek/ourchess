@@ -9,7 +9,7 @@
 
     this.drawSquare = function (context, x, y) {
         context.save();
-        context.fillStyle = myColor != 'B' ? (x ^ y) & 1 ? 'grey' : 'whitesmoke' : (x ^ y) & 1 ? 'whitesmoke' : 'grey';
+        context.fillStyle = myColor != 'B' ? (x ^ y) & 1 ? '#b58863' : '#f0d9b5' : (x ^ y) & 1 ? '#f0d9b5' : '#b58863';
         context.fillRect(x * PIECE_SIZE, y * PIECE_SIZE, PIECE_SIZE, PIECE_SIZE);
         context.restore();
     }

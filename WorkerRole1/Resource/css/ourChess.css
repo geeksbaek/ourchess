@@ -1,5 +1,5 @@
 ﻿* {
-    font-family: 'Malgun Gothic';
+    font-family: '08SeoulNamsan', 'Malgun Gothic';
     font-size: 12px;
 }
 
@@ -8,7 +8,7 @@
 
 #canvas {
     float: left;
-    border: solid 4px #000000;
+    border: solid 4px black;
 }
 
 #dragCanvas {
@@ -25,17 +25,18 @@
 #record {
     font-size: 14px;
     resize: none;
-    border: solid 4px #000000;
-    background-color: whitesmoke;
+    border: solid 4px black;
+    background-color: ghostwhite;
 }
 
 #chat > input {
     clear:both;
-    border: solid 4px #000000;
+    border: solid 4px black;
+    background-color: ghostwhite;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background-color: whitesmoke;
+    background-color: ghostwhite;
 }

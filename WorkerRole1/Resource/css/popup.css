@@ -12,12 +12,13 @@
 #Popup {
     display: none;
     position: fixed;
-    background: #FFFFFF;
+    background: whitesmoke;
     border: 4px thick #cecece;
     z-index: 2;
-    padding: 30px;
+    padding: 20px 40px 20px 40px;
     border-radius: 10px;
-    box-shadow: 10px 10px 20px 3px black ;
+    box-shadow: 0px 5px 9px grey;
+    color: black;
 }
 
     #Popup:hover {
@@ -25,5 +26,5 @@
     }
 
 #contents {
-    font-size: 20px;
+    font-size: 16px;
 }

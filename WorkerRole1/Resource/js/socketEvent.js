@@ -63,7 +63,8 @@
 
         movePermission = false;
 
-        socket.emit('sendMessage', { name: 'Server', message: '게임이 종료되었습니다.' });
+        $(record).text($(record).text() + 'Server: 게임이 종료되었습니다.\n');
+        $(record).scrollTop($(record)[0].scrollHeight);
     });
 
     socket.on('error', function (data) {
