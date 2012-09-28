@@ -20,7 +20,6 @@
   <script>
     $(window).load(function () { init('<%= room %>'); });
     $(window).resize(function () { $(chessBoardDiv).center(); $('#Popup').center(); });
-    $(window).bind('beforeunload', function () { try { socket.emit('leave', myColor); } catch (e) { } });
   </script>
 </head>
 <body>

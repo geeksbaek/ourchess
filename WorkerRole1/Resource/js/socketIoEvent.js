@@ -3,11 +3,12 @@
 
   socket.on('id', function (data) {
     myColor = data.yourColor;
+    myId = data.yourId;
 
     if (myColor == 'Guest') {
       guestEvent();
       popup('당신은 관전자입니다.');
-      socket.emit('sendMessage', { name: 'Server', message: 'Guest 입장' });
+      socket.emit('sendMessage', { name: 'Server', message: 'Guest[' + myId + '] 입장. [인원 ' + data.length + '명]' });
     } else {
       enemyColor = data.opponentColor;
       opponentEvent();
@@ -15,11 +16,11 @@
 
       if (myColor == 'W') {
         whiteEvent();
-        popup('주소를 공유해서 상대방을 초대하세요!');
-        socket.emit('sendMessage', { name: 'Server', message: 'White 입장' });
+        popup('주소를 공유해서 상대방을 초대하세요!', true);
+        socket.emit('sendMessage', { name: 'Server', message: 'White 입장. [인원 ' + data.length + '명]' });
       } else {
         popup('게임을 시작합니다.');
-        socket.emit('sendMessage', { name: 'Server', message: 'Black 입장' });
+        socket.emit('sendMessage', { name: 'Server', message: 'Black 입장. [인원 ' + data.length + '명]' });
       }
     }
   });
@@ -48,10 +49,6 @@
     $(record).scrollTop($(record)[0].scrollHeight);
   });
 
-  socket.on('error', function (data) {
-    location = '/Error';
-  });
-
   socket.on('chatMessage', function (data) {
     $(record).text($(record).text() + data.name + ' : ' + data.message + '\n');
     $(record).scrollTop($(record)[0].scrollHeight);
@@ -60,6 +57,14 @@
   socket.on('playSoundGuys', function (data) {
     audioElement.setAttribute('src', '/sound/' + data + 'Sound' + (Math.floor(Math.random() * 5)) + '.mp3');
     audioElement.play();
+  });
+
+  socket.on('error', function (data) {
+    location = '/Error';
+  });
+
+  socket.on('roomBrokenByWhite', function () {
+    location = '/Error';
   });
 }
 

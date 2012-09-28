@@ -59,19 +59,20 @@ io.sockets.on('connection', function (socket) {
     socket.set('room', data);
 
     if (io.sockets.clients(data).length == 1) {
-      socket.emit('id', { yourColor: 'W', opponentColor: 'B' });
+      socket.set('whiteId', socket.id);
+      socket.emit('id', { yourColor: 'W', opponentColor: 'B', yourId: socket.id.substring(0, 3), length: io.sockets.clients(data).length });
       socket.emit('setPosition', basicPosition);
-    } else {
-      if (io.sockets.clients(data).length == 2) {
-        socket.emit('id', { yourColor: 'B', opponentColor: 'W' });
-        socket.emit('setPosition', basicPosition);
-        socket.broadcast.to(data).emit('gameStart', true);
-      } else {
-        socket.emit('id', { yourColor: 'Guest' });
-        socket.broadcast.to(data).emit('getPosition', { id: socket.id });
-        // io.sockets.clients(data)의 객체들이 순서를 가진다면, white에게만 전송할 수도 있음.
-      }
+    } else if (io.sockets.clients(data).length == 2) {
+      socket.set('blackId', socket.id);
+      socket.emit('id', { yourColor: 'B', opponentColor: 'W', yourId: socket.id.substring(0, 3), length: io.sockets.clients(data).length });
+      socket.emit('setPosition', basicPosition);
+      io.sockets.socket(io.sockets.clients(data)[0].id).emit('setPosition', basicPosition); // 새 게임
+      socket.broadcast.to(data).emit('gameStart', true);
+    } else if (io.sockets.clients(data).length >= 3) {
+      socket.emit('id', { yourColor: 'Guest', yourId: socket.id.substring(0, 3), length: io.sockets.clients(data).length });
+      io.sockets.socket(io.sockets.clients(data)[0].id).emit('getPosition', { id: socket.id });
     }
+
   });
 
   socket.on('broadcastPosition', function (data) {
@@ -143,6 +144,25 @@ io.sockets.on('connection', function (socket) {
   socket.on('playSound', function (data) {
     socket.get('room', function (error, room) {
       io.sockets.in(room).emit('playSoundGuys', data);
+    });
+  });
+
+  socket.on('disconnect', function () {
+    socket.get('room', function (error, room) {
+      socket.get('whiteId', function (error, whiteId) {
+        socket.get('blackId', function (error, blackId) {
+          if (socket.id == whiteId) {
+            for (var i = 0, max = io.sockets.clients(room).length; i < max; i++) {
+              io.sockets.socket(io.sockets.clients(room)[i].id).emit('roomBrokenByWhite');
+            }
+          } else if (socket.id == blackId) {
+            socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Black 퇴장. [인원 ' + (io.sockets.clients(room).length - 1) + '명]' });
+            socket.broadcast.to(room).emit('gameEnd', 'Black이 퇴장했습니다.');
+          } else {
+            socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Guest[' + socket.id.substring(0, 3) + '] 퇴장. [인원 ' + (io.sockets.clients(room).length - 1) + '명]' });
+          }
+        });
+      });
     });
   });
 });

@@ -20,8 +20,14 @@ function disablePopup() {
   }
 }
 
-function popup(message) {
+function popup(message, doNotAutoClose) {
   $('#contents').text(message);
   $('#Popup').center();
   loadPopup();
+
+  if (!doNotAutoClose) {
+    setTimeout(function () {
+      disablePopup();
+    }, 3000);
+  }
 }

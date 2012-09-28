@@ -17,6 +17,7 @@ function init(room) {
     this.record = $('#record');
     this.textInput = $('#textInput');
 
+    this.myId;
     this.myColor;
     this.enemyColor;
     this.movePermission = false;
@@ -45,9 +46,12 @@ function init(room) {
     $("#Popup").on('touchstart', function () { disablePopup(); });
     $(textInput).keyup(function (e) {
       if (e.keyCode == 13 && $(textInput).val() != '') {
-        socket.emit('sendMessage', { name: myColor == 'W' ? 'White' : myColor == 'B' ? 'Black' : 'Guest', message: $(textInput).val() });
+        socket.emit('sendMessage', { name: myColor == 'W' ? 'White' : myColor == 'B' ? 'Black' : 'Guest[' + myId + ']', message: $(textInput).val() });
         $(textInput).val('');
       }
+    });
+    $(':input').live('focus', function () {
+      $(this).attr('autocomplete', 'off');
     });
   }
 }
