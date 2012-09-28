@@ -1,42 +1,66 @@
 ﻿* {
-    font-family: 'Malgun Gothic';
-    font-size: 12px;
+  font-family: 'Malgun Gothic';
+  font-size: 12px;
 }
 
 #chessBoard {
+  width: auto;
+  padding: 0px;
+  opacity: 0.95;
 }
 
 #canvas {
-    float: left;
-    border: solid 4px black;
+  float: left;
+  border: 4px solid sienna;
+  border-radius: 5px;
 }
 
 #dragCanvas {
-    visibility: hidden;
-    position: absolute;
-    left: 0;
-    top: 0;
-}
-
-#chat {
-    float: right;
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 #record {
-    font-size: 14px;
-    resize: none;
-    border: solid 4px black;
-    background-color: ghostwhite;
+  margin: 0 0 0 0;
+  float: right;
+  padding: 5px;
+  font-size: 12px;
+  resize: none;
+  background-color: #b58863;
+  color: #f0d9b5;
+  border: 4px solid sienna;
+  border-radius: 5px;
 }
 
-#chat > input {
-    clear:both;
-    border: solid 4px black;
-    background-color: ghostwhite;
+#textInput {
+  margin: 0 0 0 0;
+  float: right;
+  clear: right;
+  height: 20px;
+  padding: 5px;
+  background-color: #b58863;
+  color: #f0d9b5;
+  bottom: 0px;
+  border: 4px solid sienna;
+  border-radius: 5px;
+}
+
+input::-webkit-input-placeholder {
+  color: #f0d9b5;
+}
+
+input:-moz-placeholder {
+  color: #f0d9b5;
+}
+
+input[placeholder], [placeholder], *[placeholder] {
+  color: #f0d9b5 !important;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    background-color: ghostwhite;
+  margin: 4px 4px 4px 4px;
+  background-image: url(/img/background2.jpg);
+  background-size: cover;
 }

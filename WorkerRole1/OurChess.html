@@ -1,42 +1,39 @@
-﻿
-<!DOCTYPE html> 
-<html> 
-<head> 
-    <meta charset="utf-8" /> 
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes" /> 
-    <title>Our Chess! Realtime Multiplayer Game</title> 
-    <link rel="shortcut icon" href="/favicon.ico" /> 
-    <link rel="stylesheet" type="text/css" href="/css/ourChess.css"> 
-    <link rel="stylesheet" type="text/css" href="/css/popup.css"> 
-    <script src="http://code.jquery.com/jquery-latest.js"></script> 
-    <script src="/socket.io/socket.io.js"></script> 
-    <script src="/js/modernizr-1.6.min.js"></script> 
-    <script src="/js/popup.js"></script> 
-    <script src="/js/checkAvailability.js"></script> 
-    <script src="/js/piecePosition.js"></script> 
-    <script src="/js/draw.js"></script> 
-    <script src="/js/dragAndDrop.js"></script> 
-    <script src="/js/socketIoEvent.js"></script> 
-    <script src="/js/init.js"></script> 
-    <script>
-        $(window).load(function () { init('<%= room %>'); });
-        $(window).resize(function () { $(chessBoardDiv).center(); $('#Popup').center(); });
-        $(window).bind('beforeunload', function () { socket.emit('leave', myColor) });
-    </script> 
-</head> 
-<body> 
-    <div id="chessBoard"> 
-        <canvas id="canvas"></canvas> 
-        <canvas id="dragCanvas"></canvas> 
-        <div id="chat"> 
-            <textarea id="record" readonly="readonly"></textarea> 
-            <input type="text" /> 
-        </div> 
-    </div> 
- 
-    <div id="Popup"> 
-        <span id="contents">This is my popup box</span> 
-    </div> 
-    <div id="bgPopup"></div> 
-</body> 
-</html> 
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes" />
+  <title>Our Chess! Realtime Multiplayer Game</title>
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/ourChess.css">
+  <link rel="stylesheet" type="text/css" href="/css/popup.css">
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/modernizr-1.6.min.js"></script>
+  <script src="/js/popup.js"></script>
+  <script src="/js/checkAvailability.js"></script>
+  <script src="/js/piecePosition.js"></script>
+  <script src="/js/draw.js"></script>
+  <script src="/js/dragAndDrop.js"></script>
+  <script src="/js/socketIoEvent.js"></script>
+  <script src="/js/init.js"></script>
+  <script>
+    $(window).load(function () { init('<%= room %>'); });
+    $(window).resize(function () { $(chessBoardDiv).center(); $('#Popup').center(); });
+    $(window).bind('beforeunload', function () { try { socket.emit('leave', myColor); } catch (e) { } });
+  </script>
+</head>
+<body>
+  <div id="chessBoard">
+    <canvas id="canvas"></canvas>
+    <canvas id="dragCanvas"></canvas>
+    <textarea id="record" readonly="readonly"></textarea>
+    <input id="textInput" type="text" placeholder="send message.."/>
+  </div>
+
+  <div id="Popup">
+    <span id="contents">This is my popup box</span>
+  </div>
+  <div id="bgPopup"></div>
+</body>
+</html>
