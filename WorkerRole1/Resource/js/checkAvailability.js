@@ -520,7 +520,7 @@ function isCheckmate(position, king, attacker) {
         return { bool: false, reason: '2' };
       } else { // 안전하지 않다면 다른 기물로 다시 시도한다.
         isSafe.alreadyCheckArray.push(isSafe.attacker);
-        isSafe = isDengerousOrSafe(position, attacker, true, isSafe.alreadyCheckArray);
+        isSafe = isDengerousOrSafe(position, { x: attacker.x, y: attacker.y }, true, isSafe.alreadyCheckArray);
       }
     }
     return { bool: true, reason: '3' }; // 더 이상 막을 기물이 없다면 체크메이트이다.
@@ -538,7 +538,7 @@ function isCheckmate(position, king, attacker) {
           return { bool: false, reason: '4' };
         } else { // 킹이 안전하지 않다면, 다른 기물을 움직일 수 있는지 찾아본다.
           isSafe.alreadyCheckArray.push(isSafe.attacker);
-          isSafe = isDengerousOrSafe(position, attacker, true, isSafe.alreadyCheckArray);
+          isSafe = isDengerousOrSafe(position, { x: i, y: attacker.y }, true, isSafe.alreadyCheckArray);
         }
       } // 해당 블록은 어떤 방법으로도 수비할 수 없을 경우, 다음 블록으로 넘어간다.
     }
@@ -554,7 +554,7 @@ function isCheckmate(position, king, attacker) {
           return { bool: false, reason: '6' };
         } else {
           isSafe.alreadyCheckArray.push(isSafe.attacker);
-          isSafe = isDengerousOrSafe(position, attacker, true, isSafe.alreadyCheckArray);
+          isSafe = isDengerousOrSafe(position, { x: i, y: attacker.y }, true, isSafe.alreadyCheckArray);
         }
       }
     }
@@ -570,7 +570,7 @@ function isCheckmate(position, king, attacker) {
           return { bool: false, reason: '8' };
         } else {
           isSafe.alreadyCheckArray.push(isSafe.attacker);
-          isSafe = isDengerousOrSafe(position, attacker, true, isSafe.alreadyCheckArray);
+          isSafe = isDengerousOrSafe(position, { x: i, y: j }, true, isSafe.alreadyCheckArray);
         }
       }
     }
@@ -586,7 +586,7 @@ function isCheckmate(position, king, attacker) {
           return { bool: false, reason: '10' };
         } else {
           isSafe.alreadyCheckArray.push(isSafe.attacker);
-          isSafe = isDengerousOrSafe(position, attacker, true, isSafe.alreadyCheckArray);
+          isSafe = isDengerousOrSafe(position, { x: i, y: j }, true, isSafe.alreadyCheckArray);
         }
       }
     }

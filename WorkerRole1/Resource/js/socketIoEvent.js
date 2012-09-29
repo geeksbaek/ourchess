@@ -33,6 +33,11 @@
 
   socket.on('gameStart', function (data) {
     if (myColor == 'W') { movePermission = true; }
+    check = false;
+    castle = true;
+    queenSideCastle = true;
+    kingSideCastle = true;
+    oldPiecePosition = $.extend(true, [], piecePosition);
     popup('상대방이 입장하였습니다. 게임을 시작합니다.');
   });
 
@@ -55,7 +60,7 @@
   });
 
   socket.on('playSoundGuys', function (data) {
-    audioElement.setAttribute('src', '/sound/' + data + 'Sound' + (Math.floor(Math.random() * 5)) + '.mp3');
+    audioElement.setAttribute('src', '/sound/' + data + 'Sound' + (Math.floor(Math.random() * 4) + 1) + '.mp3');
     audioElement.play();
   });
 
@@ -112,7 +117,8 @@ function opponentEvent() {
     }
 
     theDragCanvas.style.visibility = 'hidden';
-    dragContext.clearRect(0, 0, theDragCanvas.width, theDragCanvas.height);
+    theDragCanvas.width = theDragCanvas.width;
+    theDragCanvas.height = theDragCanvas.height;
 
     var _isCheck = isDengerousOrSafe(piecePosition, findMyKing(piecePosition));
     if (_isCheck.bool) {
@@ -199,7 +205,8 @@ function guestEvent() {
     }
 
     theDragCanvas.style.visibility = 'hidden';
-    dragContext.clearRect(0, 0, theDragCanvas.width, theDragCanvas.height);
+    theDragCanvas.width = theDragCanvas.width;
+    theDragCanvas.height = theDragCanvas.height;
 
     theDragCanvas.style.marginLeft = '0px';
     theDragCanvas.style.marginTop = '0px';

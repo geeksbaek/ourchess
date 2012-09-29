@@ -20,9 +20,11 @@ function touchHandler(event) {
 
   var simulatedEvent = document.createEvent("MouseEvent");
   simulatedEvent.initMouseEvent(type, true, true, window, 1, first.screenX, first.screenY, first.clientX, first.clientY, false, false, false, false, 0, null);
-
   first.target.dispatchEvent(simulatedEvent);
-  event.preventDefault();
+
+  if (event.type == 'touchmove') {
+    event.preventDefault();
+  }
 }
 
 function mouseDownEvent(event) {
@@ -98,7 +100,8 @@ function mouseUpEvent(event) {
   }
 
   theDragCanvas.style.visibility = 'hidden';
-  dragContext.clearRect(0, 0, theDragCanvas.width, theDragCanvas.height);
+  theDragCanvas.width = theDragCanvas.width;
+  theDragCanvas.height = theDragCanvas.height;
 
   document.removeEventListener('mousemove', mouseMoveEvent, false);
   document.removeEventListener('mouseup', mouseUpEvent, false);
