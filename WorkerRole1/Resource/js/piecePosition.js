@@ -16,9 +16,11 @@ function getPosition(point) {
 }
 
 function getPointXY(event) {
+  var e = event.changedTouches === undefined ? event : event.changedTouches[0];
+
   return {
-    x: Math.floor((event.pageX - $(theCanvas).offset().left - Number($(theCanvas).css('border-width').replace('px', ''))) / PIECE_SIZE),
-    y: Math.floor((event.pageY - $(theCanvas).offset().top - Number($(theCanvas).css('border-width').replace('px', ''))) / PIECE_SIZE)
+    x: Math.floor((e.pageX - $(theCanvas).offset().left - Number($(theCanvas).css('border-width').replace('px', ''))) / PIECE_SIZE),
+    y: Math.floor((e.pageY - $(theCanvas).offset().top - Number($(theCanvas).css('border-width').replace('px', ''))) / PIECE_SIZE)
   };
 }
 
