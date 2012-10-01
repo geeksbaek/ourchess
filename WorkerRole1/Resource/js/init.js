@@ -25,9 +25,14 @@ function init(room) {
     this.PIECE_SIZE;
     this.BOARD_SIZE;
 
+
     this.oldPiecePosition;
     this.piecePosition;
     this.dragObj;
+
+    this.recordingPosition = [];
+    this.threefoldRepetition = false;
+    this.fiftyMove = 0;
 
     this.check = false;
     this.castle = true;

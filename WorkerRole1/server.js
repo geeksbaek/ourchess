@@ -123,9 +123,9 @@ io.sockets.on('connection', function (socket) {
     });
   });
 
-  socket.on('check', function (data) {
+  socket.on('check', function () {
     socket.get('room', function (error, room) {
-      io.sockets.in(room).emit('check', data);
+      io.sockets.in(room).emit('check');
     });
   });
 
@@ -156,10 +156,10 @@ io.sockets.on('connection', function (socket) {
               io.sockets.socket(io.sockets.clients(room)[i].id).emit('roomBrokenByWhite');
             }
           } else if (socket.id == blackId) {
-            socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Black 퇴장. [인원 ' + (io.sockets.clients(room).length - 1) + '명]' });
-            socket.broadcast.to(room).emit('gameEnd', 'Black이 퇴장했습니다.');
+            socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Black disconnected. [인원 ' + (io.sockets.clients(room).length - 1) + '명]' });
+            socket.broadcast.to(room).emit('gameEnd', { reason: 'Black disconnected.', message: 'White Wins!' });
           } else {
-            socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Guest[' + socket.id.substring(0, 3) + '] 퇴장. [인원 ' + (io.sockets.clients(room).length - 1) + '명]' });
+            socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Guest[' + socket.id.substring(0, 3) + '] disconnected. [인원 ' + (io.sockets.clients(room).length - 1) + '명]' });
           }
         });
       });

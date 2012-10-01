@@ -69,6 +69,8 @@ function mouseUpEvent(e) {
     });
   } else { // 이동이 가능할 경우
     var nowPoint = aboutEvent;
+    
+    oldPiecePosition = $.extend(true, [], piecePosition);
 
     setPosition(piecePosition, dragObj.point, nowPoint, dragObj.piece);
     drawSquare(context, nowPoint.x, nowPoint.y); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)

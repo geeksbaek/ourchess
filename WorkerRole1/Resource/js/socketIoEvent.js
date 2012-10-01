@@ -8,7 +8,7 @@
     if (myColor == 'Guest') {
       guestEvent();
       popup('당신은 관전자입니다.');
-      socket.emit('sendMessage', { name: 'Server', message: 'Guest[' + myId + '] 입장. [인원 ' + data.length + '명]' });
+      socket.emit('sendMessage', { name: 'Server', message: 'Guest[' + myId + '] connected. [인원 ' + data.length + '명]' });
     } else {
       enemyColor = data.opponentColor;
       opponentEvent();
@@ -17,40 +17,47 @@
       if (myColor == 'W') {
         whiteEvent();
         popup('주소를 공유해서 상대방을 초대하세요!', true);
-        socket.emit('sendMessage', { name: 'Server', message: 'White 입장. [인원 ' + data.length + '명]' });
+        socket.emit('sendMessage', { name: 'Server', message: 'White connected. [인원 ' + data.length + '명]' });
       } else {
         popup('게임을 시작합니다.');
-        socket.emit('sendMessage', { name: 'Server', message: 'Black 입장. [인원 ' + data.length + '명]' });
+        socket.emit('sendMessage', { name: 'Server', message: 'Black connected. [인원 ' + data.length + '명]' });
       }
     }
   });
 
   socket.on('setPosition', function (data) {
     piecePosition = myColor == 'B' ? rotateBoard(data) : data;
+    oldPiecePosition = $.extend(true, [], piecePosition);
     draw();
     $('#chessBoard').fadeIn(500);
   });
 
   socket.on('gameStart', function (data) {
-    if (myColor == 'W') { movePermission = true; }
+    if (myColor == 'W') {
+      movePermission = true;
+      recordingPosition.push({ position: piecePosition.toString(), repetition: 1 });
+    }
+
     check = false;
     castle = true;
     queenSideCastle = true;
     kingSideCastle = true;
+    
+    threefoldRepetition = false;
+
     oldPiecePosition = $.extend(true, [], piecePosition);
     popup('상대방이 입장하였습니다. 게임을 시작합니다.');
   });
 
-  socket.on('check', function (data) {
+  socket.on('check', function () {
     popup('Check!');
   });
 
   socket.on('gameEnd', function (data) {
-    popup(data);
-
+    popup(data.reason + '. ' + data.message);
     movePermission = false;
 
-    $(record).text($(record).text() + 'Server : 게임이 종료되었습니다.\n');
+    $(record).text($(record).text() + 'Server : ' + data.reason + '. ' + data.message + '\n');
     $(record).scrollTop($(record)[0].scrollHeight);
   });
 
@@ -111,9 +118,25 @@ function opponentEvent() {
       drawPieceX(context, data.piece, Math.abs(7 - data.point.x), Math.abs(7 - data.point.y));
     } else {
       oldPiecePosition = $.extend(true, [], piecePosition);
+
       setPosition(piecePosition, { x: Math.abs(7 - data.start.x), y: Math.abs(7 - data.start.y) }, { x: Math.abs(7 - data.end.x), y: Math.abs(7 - data.end.y) }, data.piece);
       drawSquare(context, Math.abs(7 - data.end.x), Math.abs(7 - data.end.y)); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
       drawPieceX(context, data.piece, Math.abs(7 - data.end.x), Math.abs(7 - data.end.y));
+
+      if (myColor == 'W') {
+        var positionString = piecePosition.toString();
+
+        for (var i = 0, max = recordingPosition.length; i < max; i++) {
+          if (recordingPosition[i].position == positionString) {
+            recordingPosition[i].repetition++;
+            break;
+          }
+
+          if (i == max - 1) {
+            recordingPosition.push({ position: positionString, repetition: 1 });
+          }
+        }
+      }
     }
 
     theDragCanvas.style.visibility = 'hidden';
@@ -124,15 +147,16 @@ function opponentEvent() {
     if (_isCheck.bool) {
       if (isCheckmate(piecePosition, findMyKing(piecePosition), _isCheck.attacker).bool) {
         movePermission = false;
-        socket.emit('gameEnd', 'Checkmate!');
+        socket.emit('gameEnd', { reason: 'Checkmate', message: myColor == 'W' ? 'Black Wins!' : 'White Wins!' });
       } else {
         check = true;
-        socket.emit('check', {});
+        socket.emit('check');
       }
     } else {
-      if (isStalemate(piecePosition)) {
+      var _isDraw = isDraw(piecePosition);
+      if (_isDraw.bool) {
         movePermission = false;
-        socket.emit('gameEnd', 'Stalemate!');
+        socket.emit('gameEnd', { reason: _isDraw.reason, message: 'Draw' });
       } else {
         check = false;
       }

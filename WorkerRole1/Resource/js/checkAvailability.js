@@ -68,6 +68,21 @@ function isRightRule(piece, endPoint) {
       break;
     case 'R':
       result = rookRule(pointArgs);
+      if (result == true) {
+        if (dragObj.point.y == 7 && dragObj.point.x == 0) {
+          if (myColor == 'W') {
+            queenSideCastle = false;
+          } else {
+            kingSideCastle = false;
+          }
+        } else if (dragObj.point.y == 7 && dragObj.point.x == 7) {
+          if (myColor == 'W') {
+            kingSideCastle = false;
+          } else {
+            queenSideCastle = false;
+          }
+        }
+      }
       break;
     case 'N':
       result = knightRule(pointArgs);
@@ -575,7 +590,7 @@ function isCheckmate(position, king, attacker) {
       }
     }
     return { bool: true, reason: '9' };
-  } else if ((attacker.x > king.x && attacker.y < king.y) && (attacker.x < king.x && attacker.y > king.y)) { // 왼쪽 아래, 오른쪽 위 대각선
+  } else if ((attacker.x > king.x && attacker.y < king.y) || (attacker.x < king.x && attacker.y > king.y)) { // 왼쪽 아래, 오른쪽 위 대각선
     for (var i = attacker.x, j = attacker.y; (attacker.x < king.x ? i < king.x : i > king.x) && (attacker.y < king.y ? j < king.y : j > king.y) ; attacker.x < king.x ? i++ : i--, attacker.y < king.y ? j++ : j--) {
       var isSafe = isDengerousOrSafe(position, { x: i, y: j }, true);
       if (isSafe.bool) {
@@ -596,13 +611,80 @@ function isCheckmate(position, king, attacker) {
   return { bool: false };
 }
 
+function isDraw(position) {
+  if (isStalemate(position)) {
+    return { bool: true, reason: 'Stalemate' };
+  }
+
+  if (isThreefoldRepetition()) {
+    return { bool: true, reason: 'Threefold Repetition' };
+  }
+
+  if (isKingVsKing(position)) {
+    return { bool: true, reason: 'king versus king' };
+  }
+
+  if (isKingAndBishopVsKingOrKingAndKnightpVsKing(position, 'B')) {
+    return { bool: true, reason: 'king and bishop versus king' };
+  }
+
+  if (isKingAndBishopVsKingOrKingAndKnightpVsKing(position, 'N')) {
+    return { bool: true, reason: 'king and knight versus king' };
+  }
+
+  return false;
+}
+
+function isThreefoldRepetition() {
+  for (var i = 0, max = recordingPosition.length; i < max; i++) {
+    if (recordingPosition[i].repetition >= 3) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function isKingVsKing(position) {
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+      if (position[i][j] != '' && position[i][j].charAt(1) != 'K') {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function isKingAndBishopVsKingOrKingAndKnightpVsKing(position, piece) {
+  var bishopOrKnightCount = 0;
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+      if (position[i][j] != '' && position[i][j].charAt(1) == piece) {
+        bishopOrKnightCount++;
+      } else if (position[i][j] != '' && position[i][j].charAt(1) != piece && position[i][j].charAt(1) != 'K') {
+        return false;
+      }
+    }
+  }
+
+  if (bishopOrKnightCount == 1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function isStalemate(position) {
   function isAbleToMoveSomeone(_x, _y) {
-    if (position[_y][_x].charAt(0) != myColor) {
-      var previewPosition = $.extend(true, [], position);
-      setPosition(previewPosition, { x: x, y: y }, { x: _x, y: _y }, position[y][x]);
-      if (!isDengerousOrSafe(previewPosition, findMyKing(previewPosition)).bool) { return false; }
-    }
+    try {
+      if (position[_y][_x].charAt(0) != myColor) {
+        var previewPosition = $.extend(true, [], position);
+        setPosition(previewPosition, { x: x, y: y }, { x: _x, y: _y }, position[y][x]);
+        if (!isDengerousOrSafe(previewPosition, findMyKing(previewPosition)).bool) { return false; }
+      }
+    } catch (e) { }
   }
 
   function aboutPawn(x, y) {
