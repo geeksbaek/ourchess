@@ -19,7 +19,7 @@
         popup('Copy the URL, and Send it to your friends to invite them to this match.', true);
         socket.emit('sendMessage', { name: 'Server', message: 'White connected. [' + data.length + ' in a room]' });
       } else {
-        popup('Game Start');
+        popup('Game Start.');
         socket.emit('sendMessage', { name: 'Server', message: 'Black connected. [' + data.length + ' in a room]' });
       }
     }

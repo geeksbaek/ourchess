@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes" />
-  <title>Our Chess! Realtime Multiplayer</title>
+  <title>Our Chess! Realtime Multiplayer "Room : <%= room %>"</title>
   <link rel="shortcut icon" href="/favicon.png" />
   <link rel="stylesheet" type="text/css" href="/css/ourChess.css">
   <link rel="stylesheet" type="text/css" href="/css/popup.css">
@@ -17,6 +17,14 @@
   <script src="/js/dragAndDrop.js"></script>
   <script src="/js/socketIoEvent.js"></script>
   <script src="/js/init.js"></script>
+  <script type="text/javascript">var switchTo5x = true;</script>
+  <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+  <script type="text/javascript" src="http://s.sharethis.com/loader.js"></script>
+  <script type="text/javascript">stLight.options({ publisher: "0057fd7a-f2cd-46d1-a96c-ea3c978b757c" });</script>
+  <script>
+    var options = { "publisher": "0057fd7a-f2cd-46d1-a96c-ea3c978b757c", "position": "left", "ad": { "visible": false, "openDelay": 5, "closeDelay": 0 }, "chicklets": { "items": ["facebook", "twitter", "sharethis"] } };
+    var st_hover_widget = new sharethis.widgets.hoverbuttons(options);
+  </script>
   <script>
     $(window).load(function () { init('<%= room %>'); });
     $(window).resize(function () { $(chessBoardDiv).center(); $('#Popup').center(); });
@@ -27,9 +35,8 @@
     <canvas id="canvas"></canvas>
     <canvas id="dragCanvas"></canvas>
     <textarea id="record" readonly="readonly"></textarea>
-    <input id="textInput" type="text" placeholder="send message.."/>
+    <input id="textInput" type="text" placeholder="send message.." />
   </div>
-
   <div id="Popup">
     <span id="contents">This is my popup box</span>
   </div>
