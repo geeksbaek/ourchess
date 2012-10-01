@@ -7,8 +7,8 @@
 
     if (myColor == 'Guest') {
       guestEvent();
-      popup('당신은 관전자입니다.');
-      socket.emit('sendMessage', { name: 'Server', message: 'Guest[' + myId + '] connected. [인원 ' + data.length + '명]' });
+      popup('You are observer.');
+      socket.emit('sendMessage', { name: 'Server', message: 'Guest[' + myId + '] connected. [' + data.length + ' in a room]' });
     } else {
       enemyColor = data.opponentColor;
       opponentEvent();
@@ -16,11 +16,11 @@
 
       if (myColor == 'W') {
         whiteEvent();
-        popup('주소를 공유해서 상대방을 초대하세요!', true);
-        socket.emit('sendMessage', { name: 'Server', message: 'White connected. [인원 ' + data.length + '명]' });
+        popup('Copy the URL, and Send it to your friends to invite them to this match.', true);
+        socket.emit('sendMessage', { name: 'Server', message: 'White connected. [' + data.length + ' in a room]' });
       } else {
-        popup('게임을 시작합니다.');
-        socket.emit('sendMessage', { name: 'Server', message: 'Black connected. [인원 ' + data.length + '명]' });
+        popup('Game Start');
+        socket.emit('sendMessage', { name: 'Server', message: 'Black connected. [' + data.length + ' in a room]' });
       }
     }
   });
@@ -42,11 +42,14 @@
     castle = true;
     queenSideCastle = true;
     kingSideCastle = true;
-    
+
     threefoldRepetition = false;
 
     oldPiecePosition = $.extend(true, [], piecePosition);
-    popup('상대방이 입장하였습니다. 게임을 시작합니다.');
+    popup('Black player connected. Game Start.');
+    setTimeout(function () {
+      socket.emit('sendMessage', { name: 'Server', message: 'White\'s move' });
+    }, 100);
   });
 
   socket.on('check', function () {
@@ -89,6 +92,7 @@ function whiteEvent() {
 function opponentEvent() {
   socket.on('turnOff', function (data) {
     if (data == myColor) { movePermission = true; }
+    socket.emit('sendMessage', { name: 'Server', message: data == 'W' ? 'White\'s move' : 'Black\'s move' });
   });
 
   socket.on('castle_opponent', function (data) {
@@ -151,6 +155,7 @@ function opponentEvent() {
       } else {
         check = true;
         socket.emit('check');
+        socket.emit('sendMessage', { name: 'Server', message: 'Check!' });
       }
     } else {
       var _isDraw = isDraw(piecePosition);
