@@ -32,7 +32,6 @@ function init(room) {
 
     this.recordingPosition = [];
     this.threefoldRepetition = false;
-    this.fiftyMove = 0;
 
     this.check = false;
     this.castle = true;
