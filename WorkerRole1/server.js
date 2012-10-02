@@ -72,7 +72,6 @@ io.sockets.on('connection', function (socket) {
       socket.emit('id', { yourColor: 'Guest', yourId: socket.id.substring(0, 3), length: io.sockets.clients(data).length });
       io.sockets.socket(io.sockets.clients(data)[0].id).emit('getPosition', { id: socket.id });
     }
-
   });
 
   socket.on('broadcastPosition', function (data) {

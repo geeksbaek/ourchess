@@ -18,6 +18,7 @@
         whiteEvent();
         popup('Copy the URL, and Send it to your friends to invite them to this match.', true);
         socket.emit('sendMessage', { name: 'Server', message: 'White connected. [' + data.length + ' in a room]' });
+        socket.emit('sendMessage', { name: 'Server', message: 'Waiting for your opponent..' });
       } else {
         popup('Game Start.');
         socket.emit('sendMessage', { name: 'Server', message: 'Black connected. [' + data.length + ' in a room]' });
@@ -47,9 +48,6 @@
 
     oldPiecePosition = $.extend(true, [], piecePosition);
     popup('Black player connected. Game Start.');
-    setTimeout(function () {
-      socket.emit('sendMessage', { name: 'Server', message: 'White\'s move' });
-    }, 100);
   });
 
   socket.on('check', function () {
@@ -92,7 +90,6 @@ function whiteEvent() {
 function opponentEvent() {
   socket.on('turnOff', function (data) {
     if (data == myColor) { movePermission = true; }
-    socket.emit('sendMessage', { name: 'Server', message: data == 'W' ? 'White\'s move' : 'Black\'s move' });
   });
 
   socket.on('castle_opponent', function (data) {

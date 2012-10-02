@@ -1,11 +1,24 @@
 ﻿* {
-    font-family: 'Nunito', sans-serif;
-}
-
-footer > img {
-    height: 50px;
+  font-family: 'Nunito', sans-serif;
 }
 
 body {
-    padding: 2%;
+  margin: 0 auto;
+  width: 750px;
+  background-color: whitesmoke;
+}
+
+#gameEnter {
+  margin-top: 50px;
+}
+
+footer {
+  padding-top: 15px;
+  margin: 50px auto 30px auto;
+  width: 750px;
+  height: 120px;
+}
+
+donate {
+
 }

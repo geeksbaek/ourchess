@@ -385,16 +385,35 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
 
   // 한 방향으로만 공격 가능한 폰의 경우, 공격 받는지 검사할 때와 수비 가능한지 검사할 때 다른 코드를 써야한다.
   if (checkSafe === true) {
-    if (aboutPawn(target.x - 1, target.y + 1) && !isAlreadyCheck(target.x - 1, target.y + 1)) {
-      return { bool: true, attacker: { x: target.x - 1, y: target.y + 1 }, alreadyCheckArray: notThis, reason: '1' };
-    } else if (aboutPawn(target.x + 1, target.y + 1) && !isAlreadyCheck(target.x + 1, target.y + 1)) {
-      return { bool: true, attacker: { x: target.x + 1, y: target.y + 1 }, alreadyCheckArray: notThis, reason: '2' };
-    }
+    try { // 타겟 블록에 적 기물이 있고, 타겟 블록의 왼쪽 아래에 폰이 있을 때 
+      if (aboutPawn(target.x - 1, target.y + 1) && position[target.y][target.x].charAt(0) == myColor && !isAlreadyCheck(target.x - 1, target.y + 1)) {
+        return { bool: true, attacker: { x: target.x - 1, y: target.y + 1 }, alreadyCheckArray: notThis, reason: '1' };
+      }
+    } catch (e) { }
+
+    try { // 타겟 블록에 적 기물이 있고, 타겟 블록의 오른쪽 아래에 폰이 있을 때
+      if (aboutPawn(target.x + 1, target.y + 1) && position[target.y][target.x].charAt(0) == myColor && !isAlreadyCheck(target.x + 1, target.y + 1)) {
+        return { bool: true, attacker: { x: target.x + 1, y: target.y + 1 }, alreadyCheckArray: notThis, reason: '2' };
+      }
+    } catch (e) { }
+
+    try { // 타겟 블록이 비어있고, 타겟 블록의 한 칸 아래에 폰이 있을 때
+      if (aboutPawn(target.x, target.y + 1) && position[target.y][target.x] == '' && !isAlreadyCheck(target.x, target.y + 1)) {
+        return { bool: true, attacker: { x: target.x, y: target.y + 1 }, alreadyCheckArray: notThis, reason: '3' };
+      }
+    } catch (e) { }
+
+    try { // 타겟 블록이 비어있고, 타겟 블록의 두 칸 아래에 폰이 있을 때, 그리고 해당 폰이 이전에 움직인 적이 없을 때
+      if (aboutPawn(target.x, target.y + 2) && position[target.y][target.x] == '' && position[target.y + 1][target.x] == '' && target.y + 2 == 6 && !isAlreadyCheck(target.x, target.y + 2)) {
+        return { bool: true, attacker: { x: target.x, y: target.y + 2 }, alreadyCheckArray: notThis, reason: '4' };
+      }
+    } catch (e) { }
   } else {
     if (aboutPawn(target.x - 1, target.y - 1) && !isAlreadyCheck(target.x - 1, target.y - 1)) {
-      return { bool: true, attacker: { x: target.x - 1, y: target.y - 1 }, alreadyCheckArray: notThis, reason: '3' };
-    } else if (aboutPawn(target.x + 1, target.y - 1) && !isAlreadyCheck(target.x + 1, target.y - 1)) {
-      return { bool: true, attacker: { x: target.x + 1, y: target.y - 1 }, alreadyCheckArray: notThis, reason: '4' };
+      return { bool: true, attacker: { x: target.x - 1, y: target.y - 1 }, alreadyCheckArray: notThis, reason: '5' };
+    }
+    if (aboutPawn(target.x + 1, target.y - 1) && !isAlreadyCheck(target.x + 1, target.y - 1)) {
+      return { bool: true, attacker: { x: target.x + 1, y: target.y - 1 }, alreadyCheckArray: notThis, reason: '6' };
     }
   }
 
@@ -404,7 +423,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   for (var i = target.x - 2; i <= target.x + 2; i == target.x - 1 ? i += 2 : i++) {
     for (var j = target.y - 2; j <= target.y + 2; j == target.y - 1 ? j += 2 : j++) {
       if ((Math.abs(target.x - i) != Math.abs(target.y - j)) && aboutKnight(i, j) && !isAlreadyCheck(i, j)) {
-        return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '5' };
+        return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '7' };
       }
     }
   }
@@ -415,7 +434,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   for (var i = target.x - 1; i <= target.x + 1; i++) {
     for (var j = target.y - 1; j <= target.y + 1; j++) {
       if ((!(i == target.x && j == target.y)) && aboutKing(i, j) && !isAlreadyCheck(i, j)) {
-        return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '6' };
+        return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '8' };
       }
     }
   }
@@ -427,7 +446,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   // 위쪽
   for (var j = target.y - 1; j >= 0 && position[j][target.x].charAt(0) != myColor; j--) {
     if (isRookOrQueen(position[j][target.x].charAt(1)) && !isAlreadyCheck(target.x, j)) {
-      return { bool: true, attacker: { x: target.x, y: j }, alreadyCheckArray: notThis, reason: '7' };
+      return { bool: true, attacker: { x: target.x, y: j }, alreadyCheckArray: notThis, reason: '9' };
     } else if (isBishopOrKnightOrPawnOrKing(position[j][target.x].charAt(1))) {
       break;
     }
@@ -436,7 +455,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   // 아래쪽
   for (var j = target.y + 1; j <= 7 && position[j][target.x].charAt(0) != myColor; j++) {
     if (isRookOrQueen(position[j][target.x].charAt(1)) && !isAlreadyCheck(target.x, j)) {
-      return { bool: true, attacker: { x: target.x, y: j }, alreadyCheckArray: notThis, reason: '8' };
+      return { bool: true, attacker: { x: target.x, y: j }, alreadyCheckArray: notThis, reason: '10' };
     } else if (isBishopOrKnightOrPawnOrKing(position[j][target.x].charAt(1))) {
       break;
     }
@@ -445,7 +464,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   // 왼쪽
   for (var i = target.x - 1; i >= 0 && position[target.y][i].charAt(0) != myColor; i--) {
     if (isRookOrQueen(position[target.y][i].charAt(1)) && !isAlreadyCheck(i, target.y)) {
-      return { bool: true, attacker: { x: i, y: target.y }, alreadyCheckArray: notThis, reason: '9' };
+      return { bool: true, attacker: { x: i, y: target.y }, alreadyCheckArray: notThis, reason: '11' };
     } else if (isBishopOrKnightOrPawnOrKing(position[target.y][i].charAt(1))) {
       break;
     }
@@ -454,7 +473,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   // 오른쪽
   for (var i = target.x + 1; i <= 7 && position[target.y][i].charAt(0) != myColor; i++) {
     if (isRookOrQueen(position[target.y][i].charAt(1)) && !isAlreadyCheck(i, target.y)) {
-      return { bool: true, attacker: { x: i, y: target.y }, alreadyCheckArray: notThis, reason: '10' };
+      return { bool: true, attacker: { x: i, y: target.y }, alreadyCheckArray: notThis, reason: '12' };
     } else if (isBishopOrKnightOrPawnOrKing(position[target.y][i].charAt(1))) {
       break;
     }
@@ -467,7 +486,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   // 왼쪽 위
   for (var i = target.x - 1, j = target.y - 1; i >= 0 && j >= 0 && position[j][i].charAt(0) != myColor; i--, j--) {
     if (isBishopOrQueen(position[j][i].charAt(1)) && !isAlreadyCheck(i, j)) {
-      return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '11' };
+      return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '13' };
     } else if (isRookOrKnightOrPawnOrKing(position[j][i].charAt(1))) {
       break;
     }
@@ -476,7 +495,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   // 오른쪽 위
   for (var i = target.x + 1, j = target.y - 1; i <= 7 && j >= 0 && position[j][i].charAt(0) != myColor; i++, j--) {
     if (isBishopOrQueen(position[j][i].charAt(1)) && !isAlreadyCheck(i, j)) {
-      return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '12' };
+      return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '14' };
     } else if (isRookOrKnightOrPawnOrKing(position[j][i].charAt(1))) {
       break;
     }
@@ -485,7 +504,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   // 좌측 하단 대각선
   for (var i = target.x - 1, j = target.y + 1; i >= 0 && j <= 7 && position[j][i].charAt(0) != myColor; i--, j++) {
     if (isBishopOrQueen(position[j][i].charAt(1)) && !isAlreadyCheck(i, j)) {
-      return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '13' };
+      return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '15' };
     } else if (isRookOrKnightOrPawnOrKing(position[j][i].charAt(1))) {
       break;
     }
@@ -494,7 +513,7 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   // 우측 하단 대각선
   for (var i = target.x + 1, j = target.y + 1; i <= 7 && j <= 7 && position[j][i].charAt(0) != myColor; i++, j++) {
     if (isBishopOrQueen(position[j][i].charAt(1)) && !isAlreadyCheck(i, j)) {
-      return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '14' };
+      return { bool: true, attacker: { x: i, y: j }, alreadyCheckArray: notThis, reason: '16' };
     } else if (isRookOrKnightOrPawnOrKing(position[j][i].charAt(1))) {
       break;
     }
@@ -553,7 +572,7 @@ function isCheckmate(position, king, attacker) {
           return { bool: false, reason: '4' };
         } else { // 킹이 안전하지 않다면, 다른 기물을 움직일 수 있는지 찾아본다.
           isSafe.alreadyCheckArray.push(isSafe.attacker);
-          isSafe = isDengerousOrSafe(position, { x: i, y: attacker.y }, true, isSafe.alreadyCheckArray);
+          isSafe = isDengerousOrSafe(position, { x: attacker.x, y: j }, true, isSafe.alreadyCheckArray);
         }
       } // 해당 블록은 어떤 방법으로도 수비할 수 없을 경우, 다음 블록으로 넘어간다.
     }
