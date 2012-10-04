@@ -9,9 +9,9 @@ function getPosition(point) {
   }
 
   return {
-    piece: piecePosition[point.y][point.x],
+    piece: OURCHESS.piecePosition[point.y][point.x],
     point: { x: point.x, y: point.y },
-    isEmpty: piecePosition[point.y][point.x] == '' ? true : false
+    isEmpty: OURCHESS.piecePosition[point.y][point.x] == '' ? true : false
   }
 }
 
@@ -19,12 +19,12 @@ function getPointXY(event) {
   var e = event.changedTouches === undefined ? event : event.changedTouches[0];
 
   return {
-    x: Math.floor((e.pageX - $(theCanvas).offset().left - Number($(theCanvas).css('border-width').replace('px', ''))) / PIECE_SIZE),
-    y: Math.floor((e.pageY - $(theCanvas).offset().top - Number($(theCanvas).css('border-width').replace('px', ''))) / PIECE_SIZE)
+    x: Math.floor((e.pageX - $(OURCHESS.theCanvas).offset().left - Number($(OURCHESS.theCanvas).css('border-width').replace('px', ''))) / OURCHESS.PIECE_SIZE),
+    y: Math.floor((e.pageY - $(OURCHESS.theCanvas).offset().top - Number($(OURCHESS.theCanvas).css('border-width').replace('px', ''))) / OURCHESS.PIECE_SIZE)
   };
 }
 
 function setPointXY(event) {
-  $(theDragCanvas).css('left', event.clientX - (PIECE_SIZE / 2) - $(theCanvas).offset().left);
-  $(theDragCanvas).css('top', event.clientY - (PIECE_SIZE / 2) - $(theCanvas).offset().top);
+  $(OURCHESS.theDragCanvas).css('left', event.clientX - (OURCHESS.PIECE_SIZE / 2) - $(OURCHESS.theCanvas).offset().left);
+  $(OURCHESS.theDragCanvas).css('top', event.clientY - (OURCHESS.PIECE_SIZE / 2) - $(OURCHESS.theCanvas).offset().top);
 }

@@ -1,45 +1,50 @@
 function init(room) {
   this.socket = io.connect();
   $('#chessBoard').hide();
-
   if (!Modernizr.canvas) {
+    // Only support IE10, Chrome, Firefox, Opera, Safari
     location = '/Error';
   } else {
-    this.room = room;
+    window.OURCHESS = {
+      room: room,
 
-    this.theCanvas = document.getElementById('canvas');
-    this.context = theCanvas.getContext('2d');
+      theCanvas: document.getElementById('canvas'),
+      context: document.getElementById('canvas').getContext('2d'),
 
-    this.theDragCanvas = document.getElementById('dragCanvas');
-    this.dragContext = theDragCanvas.getContext('2d');
+      theDragCanvas: document.getElementById('dragCanvas'),
+      dragContext: document.getElementById('dragCanvas').getContext('2d'),
 
-    this.chessBoardDiv = $('#chessBoard');
-    this.record = $('#record');
-    this.textInput = $('#textInput');
+      chessBoardDiv: $('#chessBoard'),
+      record: $('#record'),
+      textInput: $('#textInput'),
 
-    this.myId;
-    this.myColor;
-    this.enemyColor;
-    this.movePermission = false;
+      blackColor: '#b58863',
+      WhiteColor: '#f0d9b5',
 
-    this.PIECE_SIZE;
-    this.BOARD_SIZE;
+      myId: null,
+      myColor: null,
+      enemyColor: null,
+      movePermission: false,
 
+      PIECE_SIZE: null,
+      BOARD_SIZE: null,
 
-    this.oldPiecePosition;
-    this.piecePosition;
-    this.dragObj;
+      oldPiecePosition: null,
+      piecePosition: null,
+      dragObj: null,
 
-    this.recordingPosition = [];
-    this.threefoldRepetition = false;
+      recordingPosition: [],
+      threefoldRepetition: false,
 
-    this.check = false;
-    this.castle = true;
-    this.queenSideCastle = true;
-    this.kingSideCastle = true;
+      check: false,
+      castle: true,
+      queenSideCastle: true,
+      kingSideCastle: true,
 
-    this.audioElement = document.createElement('audio');
-    document.body.appendChild(audioElement);
+      audioElement: document.createElement('audio')
+    }
+
+    document.body.appendChild(OURCHESS.audioElement);
 
     dragDisable();
     setRayout();
@@ -48,10 +53,10 @@ function init(room) {
     $("#bgPopup").data("state", 0);
     $("#Popup").on('click', function () { disablePopup(); });
     $("#Popup").on('touchstart', function () { disablePopup(); });
-    $(textInput).keyup(function (e) {
-      if (e.keyCode == 13 && $(textInput).val() != '') {
-        socket.emit('sendMessage', { name: myColor == 'W' ? 'White' : myColor == 'B' ? 'Black' : 'Guest[' + myId + ']', message: $(textInput).val() });
-        $(textInput).val('');
+    $(OURCHESS.textInput).keyup(function (e) {
+      if (e.keyCode == 13 && $(OURCHESS.textInput).val() != '') {
+        socket.emit('sendMessage', { name: OURCHESS.myColor == 'W' ? 'White' : OURCHESS.myColor == 'B' ? 'Black' : 'Guest[' + OURCHESS.myId + ']', message: $(OURCHESS.textInput).val() });
+        $(OURCHESS.textInput).val('');
       }
     });
     $(':input').live('focus', function () {
@@ -62,39 +67,39 @@ function init(room) {
 
 function setRayout() {
   if ($(window).width() > $(window).height() || $(window).width() >= 650) { // 가로모드 or 데스크탑
-    PIECE_SIZE = ($(window).height() / 8) < 60 ? ($(window).height() / 8) - 4 : 60;
-    BOARD_SIZE = PIECE_SIZE * 8;
+    OURCHESS.PIECE_SIZE = ($(window).height() / 8) < 60 ? ($(window).height() / 8) - 4 : 60;
+    OURCHESS.BOARD_SIZE = OURCHESS.PIECE_SIZE * 8;
 
-    $(record).css('marginLeft', 4);
-    $(record).css('marginBottom', 4);
-    $(textInput).css('marginLeft', 4);
+    $(OURCHESS.record).css('marginLeft', 4);
+    $(OURCHESS.record).css('marginBottom', 4);
+    $(OURCHESS.textInput).css('marginLeft', 4);
 
-    $(record).css('width', BOARD_SIZE / 2.5);
-    $(record).css('height', BOARD_SIZE - 10 - $(textInput).outerHeight() - 4);
-    $(textInput).css('width', BOARD_SIZE / 2.5);
+    $(OURCHESS.record).css('width', OURCHESS.BOARD_SIZE / 2.5);
+    $(OURCHESS.record).css('height', OURCHESS.BOARD_SIZE - 10 - $(OURCHESS.textInput).outerHeight() - 4);
+    $(OURCHESS.textInput).css('width', OURCHESS.BOARD_SIZE / 2.5);
   } else { // 세로모드
-    PIECE_SIZE = ($(window).width() / 8) < 60 ? ($(window).width() / 8) - 4 : 60;
-    BOARD_SIZE = PIECE_SIZE * 8;
+    OURCHESS.PIECE_SIZE = ($(window).width() / 8) < 60 ? ($(window).width() / 8) - 4 : 60;
+    OURCHESS.BOARD_SIZE = OURCHESS.PIECE_SIZE * 8;
 
-    $(record).css('marginTop', 4);
-    $(record).css('marginBottom', 4);
+    $(OURCHESS.record).css('marginTop', 4);
+    $(OURCHESS.record).css('marginBottom', 4);
 
-    $(record).css('height', BOARD_SIZE / 3.5);
-    $(record).css('width', BOARD_SIZE - 10);
-    $(textInput).css('width', BOARD_SIZE - 10);
+    $(OURCHESS.record).css('height', OURCHESS.BOARD_SIZE / 3.5);
+    $(OURCHESS.record).css('width', OURCHESS.BOARD_SIZE - 10);
+    $(OURCHESS.textInput).css('width', OURCHESS.BOARD_SIZE - 10);
 
-    $(record).css('float', 'left');
-    $(textInput).css('float', 'left');
+    $(OURCHESS.record).css('float', 'left');
+    $(OURCHESS.textInput).css('float', 'left');
 
-    $(chessBoardDiv).css('width', BOARD_SIZE + 8);
+    $(OURCHESS.chessBoardDiv).css('width', OURCHESS.BOARD_SIZE + 8);
   }
 
-  theCanvas.width = BOARD_SIZE; // 캔버스 고유 API인 모양, jQuery의 css 메소드로 설정하면 캔버스가 깨짐
-  theCanvas.height = BOARD_SIZE;
-  theDragCanvas.width = PIECE_SIZE;
-  theDragCanvas.height = PIECE_SIZE;
+  OURCHESS.theCanvas.width = OURCHESS.BOARD_SIZE; // 캔버스 고유 API인 모양, jQuery의 css 메소드로 설정하면 캔버스가 깨짐
+  OURCHESS.theCanvas.height = OURCHESS.BOARD_SIZE;
+  OURCHESS.theDragCanvas.width = OURCHESS.PIECE_SIZE;
+  OURCHESS.theDragCanvas.height = OURCHESS.PIECE_SIZE;
 
-  $(chessBoardDiv).center();
+  $(OURCHESS.chessBoardDiv).center();
   $('#Popup').center();
 }
 

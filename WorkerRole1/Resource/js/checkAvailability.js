@@ -6,11 +6,11 @@
     return false;
   }
 
-  if (movePermission == false) {
+  if (OURCHESS.movePermission == false) {
     return false;
   }
 
-  if (startPiece.piece.charAt(0) != myColor) {
+  if (startPiece.piece.charAt(0) != OURCHESS.myColor) {
     return false;
   }
 
@@ -29,16 +29,16 @@ function isDropPossible(event) {
     return false;
   }
 
-  if (dragObj.piece.charAt(0) == endPiece.piece.charAt(0)) {
+  if (OURCHESS.dragObj.piece.charAt(0) == endPiece.piece.charAt(0)) {
     return false;
   }
 
-  if (!isRightRule(dragObj.piece.charAt(1), endPoint)) {
+  if (!isRightRule(OURCHESS.dragObj.piece.charAt(1), endPoint)) {
     return false;
   }
 
-  var previewPosition = $.extend(true, [], piecePosition);
-  setPosition(previewPosition, dragObj.point, endPoint, dragObj.piece);
+  var previewPosition = $.extend(true, [], OURCHESS.piecePosition);
+  setPosition(previewPosition, OURCHESS.dragObj.point, endPoint, OURCHESS.dragObj.piece);
 
   if (isDengerousOrSafe(previewPosition, findMyKing(previewPosition)).bool) {
     return false;
@@ -58,7 +58,7 @@ function isInBoard(p) {
 function isRightRule(piece, endPoint) {
   var result = true;
   var pointArgs = {
-    start: dragObj.point,
+    start: OURCHESS.dragObj.point,
     end: endPoint
   }
 
@@ -69,17 +69,17 @@ function isRightRule(piece, endPoint) {
     case 'R':
       result = rookRule(pointArgs);
       if (result == true) {
-        if (dragObj.point.y == 7 && dragObj.point.x == 0) {
-          if (myColor == 'W') {
-            queenSideCastle = false;
+        if (OURCHESS.dragObj.point.y == 7 && OURCHESS.dragObj.point.x == 0) {
+          if (OURCHESS.myColor == 'W') {
+            OURCHESS.queenSideCastle = false;
           } else {
-            kingSideCastle = false;
+            OURCHESS.kingSideCastle = false;
           }
-        } else if (dragObj.point.y == 7 && dragObj.point.x == 7) {
-          if (myColor == 'W') {
-            kingSideCastle = false;
+        } else if (OURCHESS.dragObj.point.y == 7 && OURCHESS.dragObj.point.x == 7) {
+          if (OURCHESS.myColor == 'W') {
+            OURCHESS.kingSideCastle = false;
           } else {
-            queenSideCastle = false;
+            OURCHESS.queenSideCastle = false;
           }
         }
       }
@@ -96,9 +96,9 @@ function isRightRule(piece, endPoint) {
     case 'K':
       result = kingRule(pointArgs);
       if (result == true) { // 한번이라도 움직일 시 캐슬 불가
-        kingSideCastle = false;
-        queenSideCastle = false;
-        castle = false;
+        OURCHESS.kingSideCastle = false;
+        OURCHESS.queenSideCastle = false;
+        OURCHESS.castle = false;
       }
       break;
   }
@@ -123,7 +123,7 @@ function pawnRule(p) {
     } else if (p.start.y - p.end.y == 1) { // 1칸 이동
       if (getPosition(p.end).isEmpty) {
         if (p.end.y == 0) { // 프로모션
-          dragObj.piece = myColor + 'Q';
+          OURCHESS.dragObj.piece = OURCHESS.myColor + 'Q';
         }
         return true;
       }
@@ -133,14 +133,14 @@ function pawnRule(p) {
   } else if (Math.abs(p.start.x - p.end.x) == 1 && p.start.y - p.end.y == 1) { // 대각선 1칸 캡처
     if (!getPosition(p.end).isEmpty) {
       if (p.end.y == 0) { // 프로모션
-        dragObj.piece = myColor + 'Q';
+        OURCHESS.dragObj.piece = OURCHESS.myColor + 'Q';
       }
       return true;
     } else { // 대각선 1칸 이동이지만 해당 위치가 빈 블록일 때
-      if (isEnPassant(piecePosition, oldPiecePosition, p.start, p.end, (myColor == 'W' ? 'B' : 'W') + 'P')) { // 앙파상일 때
-        piecePosition[p.start.y][p.end.x] = '';
-        drawSquare(context, p.end.x, p.start.y);
-        socket.emit('enPassant', { x: p.end.x, y: p.start.y, myColor: myColor });
+      if (isEnPassant(OURCHESS.piecePosition, OURCHESS.oldPiecePosition, p.start, p.end, (OURCHESS.myColor == 'W' ? 'B' : 'W') + 'P')) { // 앙파상일 때
+        OURCHESS.piecePosition[p.start.y][p.end.x] = '';
+        drawSquare(OURCHESS.context, p.end.x, p.start.y);
+        socket.emit('enPassant', { x: p.end.x, y: p.start.y, myColor: OURCHESS.myColor });
         return true;
       } else {
         return false;
@@ -180,7 +180,7 @@ function queenRule(p) {
 function kingRule(p) {
   if (Math.abs(p.start.x - p.end.x) <= 1 && Math.abs(p.start.y - p.end.y) <= 1) {
     return true;
-  } else if (p.start.y == p.end.y && Math.abs(p.start.x - p.end.x) == 2 && castle && !check) { // 캐슬
+  } else if (p.start.y == p.end.y && Math.abs(p.start.x - p.end.x) == 2 && OURCHESS.castle && !OURCHESS.check) { // 캐슬
     return castleCheck(p.start, p.end);
   } else {
     return false;
@@ -250,17 +250,17 @@ function horizontalCheck(start, end) {
     }
   }
 
-  if (myColor == 'W') {
+  if (OURCHESS.myColor == 'W') {
     if (start.x == 0 && start.y == 7) { // 퀸사이드 캐슬 불가능
-      queenSideCastle = false;
+      OURCHESS.queenSideCastle = false;
     } else if (start.x == 7 && start.y == 7) { // 킹사이드 캐슬 불가능
-      kingSideCastle = false;
+      OURCHESS.kingSideCastle = false;
     }
   } else {
     if (start.x == 0 && start.y == 7) { // 킹사이드 캐슬 불가능
-      kingSideCastle = false;
+      OURCHESS.kingSideCastle = false;
     } else if (start.x == 7 && start.y == 7) { // 퀸사이드 캐슬 불가능
-      queenSideCastle = false;
+      OURCHESS.queenSideCastle = false;
     }
   }
 
@@ -282,17 +282,17 @@ function verticalCheck(start, end) {
     }
   }
 
-  if (myColor == 'W') {
+  if (OURCHESS.myColor == 'W') {
     if (start.x == 0 && start.y == 7) { // 퀸사이드 캐슬 불가능
-      queenSideCastle = false;
+      OURCHESS.queenSideCastle = false;
     } else if (start.x == 7 && start.y == 7) { // 킹사이드 캐슬 불가능
-      kingSideCastle = false;
+      OURCHESS.kingSideCastle = false;
     }
   } else {
     if (start.x == 0 && start.y == 7) { // 킹사이드 캐슬 불가능
-      kingSideCastle = false;
+      OURCHESS.kingSideCastle = false;
     } else if (start.x == 7 && start.y == 7) { // 퀸사이드 캐슬 불가능
-      queenSideCastle = false;
+      OURCHESS.queenSideCastle = false;
     }
   }
 
@@ -300,61 +300,61 @@ function verticalCheck(start, end) {
 }
 
 function castleCheck(start, end) {
-  if (((start.x == 4 && end.x == 2 && myColor == 'W') || (start.x == 3 && end.x == 5 && myColor == 'B')) && queenSideCastle) { // 퀸사이드
-    for (var i = myColor == 'W' ? 1 : 6; myColor == 'W' ? i < start.x : i > start.x; myColor == 'W' ? i++ : i--) {
+  if (((start.x == 4 && end.x == 2 && OURCHESS.myColor == 'W') || (start.x == 3 && end.x == 5 && OURCHESS.myColor == 'B')) && OURCHESS.queenSideCastle) { // 퀸사이드
+    for (var i = OURCHESS.myColor == 'W' ? 1 : 6; OURCHESS.myColor == 'W' ? i < start.x : i > start.x; OURCHESS.myColor == 'W' ? i++ : i--) {
       if (!getPosition({ x: i, y: start.y }).isEmpty) {
         return false;
       }
     }
 
-    for (var i = myColor == 'W' ? 2 : 5; myColor == 'W' ? i < start.x : i > start.x; myColor == 'W' ? i++ : i--) {
-      var previewPosition = $.extend(true, [], piecePosition);
-      setPosition(previewPosition, dragObj.point, { x: i, y: start.y }, dragObj.piece);
+    for (var i = OURCHESS.myColor == 'W' ? 2 : 5; OURCHESS.myColor == 'W' ? i < start.x : i > start.x; OURCHESS.myColor == 'W' ? i++ : i--) {
+      var previewPosition = $.extend(true, [], OURCHESS.piecePosition);
+      setPosition(previewPosition, OURCHESS.dragObj.point, { x: i, y: start.y }, OURCHESS.dragObj.piece);
 
       if (isDengerousOrSafe(previewPosition, findMyKing(previewPosition)).bool) {
         return false;
       }
     }
 
-    queenSideCastle = false;
+    OURCHESS.queenSideCastle = false;
 
-    var oldRook = { x: myColor == 'W' ? 0 : 7, y: 7 };
-    var newRook = { x: myColor == 'W' ? 3 : 4, y: 7 };
+    var oldRook = { x: OURCHESS.myColor == 'W' ? 0 : 7, y: 7 };
+    var newRook = { x: OURCHESS.myColor == 'W' ? 3 : 4, y: 7 };
 
-    drawSquare(context, oldRook.x, oldRook.y);
-    drawPieceX(context, myColor + 'R', newRook.x, newRook.y);
-    setPosition(piecePosition, oldRook, newRook, myColor + 'R');
+    drawSquare(OURCHESS.context, oldRook.x, oldRook.y);
+    drawPieceX(OURCHESS.context, OURCHESS.myColor + 'R', newRook.x, newRook.y);
+    setPosition(OURCHESS.piecePosition, oldRook, newRook, OURCHESS.myColor + 'R');
 
     socket.emit('castle', {
-      myColor: myColor,
+      myColor: OURCHESS.myColor,
       oldRook: oldRook,
       newRook: newRook
     });
-  } else if (((start.x == 4 && end.x == 6 && myColor == 'W') || (start.x == 3 && end.x == 1 && myColor == 'B')) && kingSideCastle) { // 킹사이드
-    for (var i = myColor == 'B' ? 1 : 6; myColor == 'B' ? i < start.x : i > start.x; myColor == 'B' ? i++ : i--) {
+  } else if (((start.x == 4 && end.x == 6 && OURCHESS.myColor == 'W') || (start.x == 3 && end.x == 1 && OURCHESS.myColor == 'B')) && OURCHESS.kingSideCastle) { // 킹사이드
+    for (var i = OURCHESS.myColor == 'B' ? 1 : 6; OURCHESS.myColor == 'B' ? i < start.x : i > start.x; OURCHESS.myColor == 'B' ? i++ : i--) {
       if (!getPosition({ x: i, y: start.y }).isEmpty) {
         return false;
       }
 
-      var previewPosition = $.extend(true, [], piecePosition);
-      setPosition(previewPosition, dragObj.point, { x: i, y: start.y }, dragObj.piece);
+      var previewPosition = $.extend(true, [], OURCHESS.piecePosition);
+      setPosition(previewPosition, OURCHESS.dragObj.point, { x: i, y: start.y }, OURCHESS.dragObj.piece);
 
       if (isDengerousOrSafe(previewPosition, findMyKing(previewPosition)).bool) {
         return false;
       }
     }
 
-    kingSideCastle = false;
+    OURCHESS.kingSideCastle = false;
 
-    var oldRook = { x: myColor == 'W' ? 7 : 0, y: 7 };
-    var newRook = { x: myColor == 'W' ? 5 : 2, y: 7 };
+    var oldRook = { x: OURCHESS.myColor == 'W' ? 7 : 0, y: 7 };
+    var newRook = { x: OURCHESS.myColor == 'W' ? 5 : 2, y: 7 };
 
-    drawSquare(context, oldRook.x, oldRook.y);
-    drawPieceX(context, myColor + 'R', newRook.x, newRook.y);
-    setPosition(piecePosition, oldRook, newRook, myColor + 'R');
+    drawSquare(OURCHESS.context, oldRook.x, oldRook.y);
+    drawPieceX(OURCHESS.context, OURCHESS.myColor + 'R', newRook.x, newRook.y);
+    setPosition(OURCHESS.piecePosition, oldRook, newRook, OURCHESS.myColor + 'R');
 
     socket.emit('castle', {
-      myColor: myColor,
+      myColor: OURCHESS.myColor,
       oldRook: oldRook,
       newRook: newRook
     });
@@ -373,11 +373,11 @@ function isDengerousOrSafe(position, target, checkSafe, notThis) {
   function isAlreadyCheck(x, y) { for (var i = 0, max = notThis.length; i < max; i++) { if (notThis[i].x == x && notThis[i].y == y) return true; } return false; }
 
   if (checkSafe === true) {
-    var enemyColor = this.myColor;
-    var myColor = this.enemyColor;
+    var enemyColor = OURCHESS.myColor;
+    var myColor = OURCHESS.enemyColor;
   } else {
-    var enemyColor = this.enemyColor;
-    var myColor = this.myColor;
+    var enemyColor = OURCHESS.enemyColor;
+    var myColor = OURCHESS.myColor;
   }
 
   // 폰의 공격에 대한 검사
@@ -532,7 +532,7 @@ function isEnPassant(nowPosition, oldPosition, pawn, end, enemyPawn) {
 
 function isCheckmate(position, king, attacker) {
   // 킹이 도망갈 곳이 있는지 검사
-  function isAbleToMoveTheKing(x, y) { try { if (position[y][x].charAt(0) != myColor) { return !isDengerousOrSafe(position, { x: x, y: y }).bool; } else { return false; } } catch (e) { } }
+  function isAbleToMoveTheKing(x, y) { try { if (position[y][x].charAt(0) != OURCHESS.myColor) { return !isDengerousOrSafe(position, { x: x, y: y }).bool; } else { return false; } } catch (e) { } }
 
   for (var i = king.x - 1; i <= king.x + 1; i++) {
     for (var j = king.y - 1; j <= king.y + 1; j++) {
@@ -577,7 +577,9 @@ function isCheckmate(position, king, attacker) {
       } // 해당 블록은 어떤 방법으로도 수비할 수 없을 경우, 다음 블록으로 넘어간다.
     }
     return { bool: true, reason: '5' }; // 어떤 블록도 수비할 수 없을 경우 체크메이트이다.
-  } else if (attacker.y == king.y) { // 수평
+  }
+
+  if (attacker.y == king.y) { // 수평
     for (var i = attacker.x; attacker.x < king.x ? i < king.x : i > king.x; attacker.x < king.x ? i++ : i--) {
       var isSafe = isDengerousOrSafe(position, { x: i, y: attacker.y }, true);
       while (isSafe.bool) {
@@ -593,7 +595,9 @@ function isCheckmate(position, king, attacker) {
       }
     }
     return { bool: true, reason: '7' };
-  } else if ((attacker.x < king.x && attacker.y < king.y) || (attacker.x > king.x && attacker.y > king.y)) { // 왼쪽 위, 오른쪽 아래 대각선
+  }
+
+  if ((attacker.x < king.x && attacker.y < king.y) || (attacker.x > king.x && attacker.y > king.y)) { // 왼쪽 위, 오른쪽 아래 대각선
     for (var i = attacker.x, j = attacker.y; (attacker.x < king.x ? i < king.x : i > king.x) && (attacker.y < king.y ? j < king.y : j > king.y) ; attacker.x < king.x ? i++ : i--, attacker.y < king.y ? j++ : j--) {
       var isSafe = isDengerousOrSafe(position, { x: i, y: j }, true);
       if (isSafe.bool) {
@@ -609,7 +613,9 @@ function isCheckmate(position, king, attacker) {
       }
     }
     return { bool: true, reason: '9' };
-  } else if ((attacker.x > king.x && attacker.y < king.y) || (attacker.x < king.x && attacker.y > king.y)) { // 왼쪽 아래, 오른쪽 위 대각선
+  }
+
+  if ((attacker.x > king.x && attacker.y < king.y) || (attacker.x < king.x && attacker.y > king.y)) { // 왼쪽 아래, 오른쪽 위 대각선
     for (var i = attacker.x, j = attacker.y; (attacker.x < king.x ? i < king.x : i > king.x) && (attacker.y < king.y ? j < king.y : j > king.y) ; attacker.x < king.x ? i++ : i--, attacker.y < king.y ? j++ : j--) {
       var isSafe = isDengerousOrSafe(position, { x: i, y: j }, true);
       if (isSafe.bool) {
@@ -655,8 +661,8 @@ function isDraw(position) {
 }
 
 function isThreefoldRepetition() {
-  for (var i = 0, max = recordingPosition.length; i < max; i++) {
-    if (recordingPosition[i].repetition >= 3) {
+  for (var i = 0, max = OURCHESS.recordingPosition.length; i < max; i++) {
+    if (OURCHESS.recordingPosition[i].repetition >= 3) {
       return true;
     }
   }
@@ -698,7 +704,7 @@ function isKingAndBishopVsKingOrKingAndKnightpVsKing(position, piece) {
 function isStalemate(position) {
   function isAbleToMoveSomeone(_x, _y) {
     try {
-      if (position[_y][_x].charAt(0) != myColor) {
+      if (position[_y][_x].charAt(0) != OURCHESS.myColor) {
         var previewPosition = $.extend(true, [], position);
         setPosition(previewPosition, { x: x, y: y }, { x: _x, y: _y }, position[y][x]);
         if (!isDengerousOrSafe(previewPosition, findMyKing(previewPosition)).bool) { return false; }
@@ -707,19 +713,47 @@ function isStalemate(position) {
   }
 
   function aboutPawn(x, y) {
-    try { if (position[y - 1][x] == '' && position[y - 2][x] == '' && isAbleToMoveSomeone(x, y - 2) === false) { return false; } } catch (e) { }
-    try { if (position[y - 1][x] == '' && isAbleToMoveSomeone(x, y - 1) === false) { return false; } } catch (e) { }
-    try { if (position[y - 1][x - 1].charAt(0) == enemyColor && isAbleToMoveSomeone(x - 1, y - 1) === false) { return false; } } catch (e) { }
-    try { if (position[y - 1][x + 1].charAt(0) == enemyColor && isAbleToMoveSomeone(x + 1, y - 1) === false) { return false; } } catch (e) { }
-    try { if (isEnPassant(position, oldPiecePosition, piece, { x: x - 1, y: y - 1 }, enemyColor + 'P') && isAbleToMoveSomeone(x - 1, y - 1) === false) { return false; } } catch (e) { }
-    try { if (isEnPassant(position, oldPiecePosition, piece, { x: x + 1, y: y - 1 }, enemyColor + 'P') && isAbleToMoveSomeone(x + 1, y - 1) === false) { return false; } } catch (e) { }
+    try {
+      if (position[y - 1][x] == '' && position[y - 2][x] == '' && isAbleToMoveSomeone(x, y - 2) === false) { return false; }
+    } catch (e) { }
+
+    try {
+      if (position[y - 1][x] == '' && isAbleToMoveSomeone(x, y - 1) === false) { return false; }
+    } catch (e) { }
+
+    try {
+      if (position[y - 1][x - 1].charAt(0) == OURCHESS.enemyColor && isAbleToMoveSomeone(x - 1, y - 1) === false) { return false; }
+    } catch (e) { }
+
+    try {
+      if (position[y - 1][x + 1].charAt(0) == OURCHESS.enemyColor && isAbleToMoveSomeone(x + 1, y - 1) === false) { return false; }
+    } catch (e) { }
+
+    try {
+      if (isEnPassant(position, OURCHESS.oldPiecePosition, piece, { x: x - 1, y: y - 1 }, enemyColor + 'P') && isAbleToMoveSomeone(x - 1, y - 1) === false) { return false; }
+    } catch (e) { }
+
+    try {
+      if (isEnPassant(position, OURCHESS.oldPiecePosition, piece, { x: x + 1, y: y - 1 }, enemyColor + 'P') && isAbleToMoveSomeone(x + 1, y - 1) === false) { return false; }
+    } catch (e) { }
   }
 
   function aboutBishop(x, y) {
-    for (var i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) { if (isAbleToMoveSomeone(i, j) === false) { return false; } }
-    for (var i = x + 1, j = y - 1; i <= 7 && j >= 0; i++, j--) { if (isAbleToMoveSomeone(i, j) === false) { return false; } }
-    for (var i = x - 1, j = y + 1; i >= 0 && j <= 7; i--, j++) { if (isAbleToMoveSomeone(i, j) === false) { return false; } }
-    for (var i = x + 1, j = y + 1; i <= 7 && j <= 7; i++, j++) { if (isAbleToMoveSomeone(i, j) === false) { return false; } }
+    for (var i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) {
+      if (isAbleToMoveSomeone(i, j) === false) { return false; }
+    }
+
+    for (var i = x + 1, j = y - 1; i <= 7 && j >= 0; i++, j--) {
+      if (isAbleToMoveSomeone(i, j) === false) { return false; }
+    }
+
+    for (var i = x - 1, j = y + 1; i >= 0 && j <= 7; i--, j++) {
+      if (isAbleToMoveSomeone(i, j) === false) { return false; }
+    }
+
+    for (var i = x + 1, j = y + 1; i <= 7 && j <= 7; i++, j++) {
+      if (isAbleToMoveSomeone(i, j) === false) { return false; }
+    }
   }
 
   function aboutKnight(x, y) {
@@ -731,31 +765,67 @@ function isStalemate(position) {
   }
 
   function aboutRook(x, y) {
-    for (var j = y - 1; j >= 0; j--) { if (isAbleToMoveSomeone(x, j) === false) { return false; } }
-    for (var j = y + 1; j <= 7; j++) { if (isAbleToMoveSomeone(x, j) === false) { return false; } }
-    for (var i = x - 1; i >= 0; i--) { if (isAbleToMoveSomeone(i, y) === false) { return false; } }
-    for (var i = x + 1; i <= 7; i++) { if (isAbleToMoveSomeone(i, y) === false) { return false; } }
+    for (var j = y - 1; j >= 0; j--) {
+      if (isAbleToMoveSomeone(x, j) === false) { return false; }
+    }
+
+    for (var j = y + 1; j <= 7; j++) {
+      if (isAbleToMoveSomeone(x, j) === false) { return false; }
+    }
+
+    for (var i = x - 1; i >= 0; i--) {
+      if (isAbleToMoveSomeone(i, y) === false) { return false; }
+    }
+
+    for (var i = x + 1; i <= 7; i++) {
+      if (isAbleToMoveSomeone(i, y) === false) { return false; }
+    }
   }
 
   function aboutQueen(x, y) {
-    for (var i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) { if (isAbleToMoveSomeone(i, j) === false) { return false; } }
-    for (var i = x + 1, j = y - 1; i <= 7 && j >= 0; i++, j--) { if (isAbleToMoveSomeone(i, j) === false) { return false; } }
-    for (var i = x - 1, j = y + 1; i >= 0 && j <= 7; i--, j++) { if (isAbleToMoveSomeone(i, j) === false) { return false; } }
-    for (var i = x + 1, j = y + 1; i <= 7 && j <= 7; i++, j++) { if (isAbleToMoveSomeone(i, j) === false) { return false; } }
+    for (var i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) {
+      if (isAbleToMoveSomeone(i, j) === false) { return false; }
+    }
+    for (var i = x + 1, j = y - 1; i <= 7 && j >= 0; i++, j--) {
+      if (isAbleToMoveSomeone(i, j) === false) { return false; }
+    }
 
-    for (var j = y - 1; j >= 0; j--) { if (isAbleToMoveSomeone(x, j) === false) { return false; } }
-    for (var j = y + 1; j <= 7; j++) { if (isAbleToMoveSomeone(x, j) === false) { return false; } }
-    for (var i = x - 1; i >= 0; i--) { if (isAbleToMoveSomeone(i, y) === false) { return false; } }
-    for (var i = x + 1; i <= 7; i++) { if (isAbleToMoveSomeone(i, y) === false) { return false; } }
+    for (var i = x - 1, j = y + 1; i >= 0 && j <= 7; i--, j++) {
+      if (isAbleToMoveSomeone(i, j) === false) { return false; }
+    }
+
+    for (var i = x + 1, j = y + 1; i <= 7 && j <= 7; i++, j++) {
+      if (isAbleToMoveSomeone(i, j) === false) { return false; }
+    }
+
+    for (var j = y - 1; j >= 0; j--) {
+      if (isAbleToMoveSomeone(x, j) === false) { return false; }
+    }
+
+    for (var j = y + 1; j <= 7; j++) {
+      if (isAbleToMoveSomeone(x, j) === false) { return false; }
+    }
+
+    for (var i = x - 1; i >= 0; i--) {
+      if (isAbleToMoveSomeone(i, y) === false) { return false; }
+    }
+
+    for (var i = x + 1; i <= 7; i++) {
+      if (isAbleToMoveSomeone(i, y) === false) { return false; }
+    }
   }
 
   function aboutKing(x, y) {
-    for (var i = x - 1; i <= x + 1; i++) { for (var j = y - 1; j <= y + 1; j++) { if (!(i == x && j == y) && isAbleToMoveSomeone(i, j) === false) { return false; } } }
+    for (var i = x - 1; i <= x + 1; i++) {
+      for (var j = y - 1; j <= y + 1; j++) {
+        if (!(i == x && j == y) && isAbleToMoveSomeone(i, j) === false) { return false; }
+      }
+    }
   }
 
   for (var y = 0; y < 8; y++) {
     for (var x = 0; x < 8; x++) {
-      if (position[y][x].charAt(0) == myColor) {
+      if (position[y][x].charAt(0) == OURCHESS.myColor) {
         switch (position[y][x].charAt(1)) {
           case 'P':
             if (aboutPawn(x, y) === false) return false;
