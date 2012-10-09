@@ -30,7 +30,7 @@ function mouseDownEvent(e) {
   drawSquare(OURCHESS.context, OURCHESS.dragObj.point.x, OURCHESS.dragObj.point.y); // 캔버스에 드래그를 시작한 위치의 기물의 모습을 가림
   drawPieceX(OURCHESS.dragContext, OURCHESS.dragObj.piece, 0, 0); // 드래그 캔버스에 기물의 이미지를 그림
 
-  event.preventDefault();
+  e.preventDefault();
 
   document.addEventListener('mousemove', mouseMoveEvent, false);
   document.addEventListener('mouseup', mouseUpEvent, false);
@@ -51,7 +51,7 @@ function mouseMoveEvent(e) {
     left: event.clientX - $(OURCHESS.theCanvas).offset().left
   });
 
-  event.preventDefault();
+  e.preventDefault();
 }
 
 function mouseUpEvent(e) {
@@ -94,7 +94,7 @@ function mouseUpEvent(e) {
   OURCHESS.theDragCanvas.width = OURCHESS.theDragCanvas.width;
   OURCHESS.theDragCanvas.height = OURCHESS.theDragCanvas.height;
 
-  event.preventDefault();
+  e.preventDefault();
 
   document.removeEventListener('mousemove', mouseMoveEvent, false);
   document.removeEventListener('mouseup', mouseUpEvent, false);
