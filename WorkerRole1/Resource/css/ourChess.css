@@ -28,6 +28,7 @@
   resize: none;
   background-color: #b58863;
   color: #f0d9b5;
+  outline: none;
   border: 4px solid sienna;
   border-radius: 5px;
   cursor: default;
@@ -43,6 +44,7 @@
   background-color: #b58863;
   color: #f0d9b5;
   bottom: 0px;
+  outline: none;
   border: 4px solid sienna;
   border-radius: 5px;
   font-family: 'Nunito', 'Malgun Gothic', sans-serif;
