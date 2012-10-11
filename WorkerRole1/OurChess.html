@@ -30,7 +30,13 @@
   </script>
   <script>
     $(window).load(function () { init('<%= room %>'); });
-    $(window).resize(function () { $(OURCHESS.chessBoardDiv).center(); $('#Popup').center(); });
+    $(window).resize(function () {
+      setRayout();
+      cleartheCanvas();
+      draw();
+      $(OURCHESS.chessBoardDiv).center();
+      $('#Popup').center();
+    });
   </script>
 </head>
 <body>

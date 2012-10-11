@@ -73,31 +73,21 @@ function init(room) {
 }
 
 function setRayout() {
-  if ($(window).width() > $(window).height() || $(window).width() >= 650) { // 가로모드 or 데스크탑
+  if ($(window).width() > $(window).height() || $(window).width() >= 720) { // 가로모드 or 데스크탑
     OURCHESS.PIECE_SIZE = ($(window).height() / 8) < 60 ? ($(window).height() / 8) - 4 : 60;
     OURCHESS.BOARD_SIZE = OURCHESS.PIECE_SIZE * 8;
-
-    $(OURCHESS.record).css('marginLeft', 4);
-    $(OURCHESS.record).css('marginBottom', 4);
-    $(OURCHESS.textInput).css('marginLeft', 4);
 
     $(OURCHESS.record).css('width', OURCHESS.BOARD_SIZE / 2.5);
     $(OURCHESS.record).css('height', OURCHESS.BOARD_SIZE - 10 - $(OURCHESS.textInput).outerHeight() - 4);
     $(OURCHESS.textInput).css('width', OURCHESS.BOARD_SIZE / 2.5);
+    $(OURCHESS.chessBoardDiv).css('width', 'auto');
   } else { // 세로모드
     OURCHESS.PIECE_SIZE = ($(window).width() / 8) < 60 ? ($(window).width() / 8) - 4 : 60;
     OURCHESS.BOARD_SIZE = OURCHESS.PIECE_SIZE * 8;
 
-    $(OURCHESS.record).css('marginTop', 4);
-    $(OURCHESS.record).css('marginBottom', 4);
-
     $(OURCHESS.record).css('height', OURCHESS.BOARD_SIZE / 3.5);
     $(OURCHESS.record).css('width', OURCHESS.BOARD_SIZE - 10);
     $(OURCHESS.textInput).css('width', OURCHESS.BOARD_SIZE - 10);
-
-    $(OURCHESS.record).css('float', 'left');
-    $(OURCHESS.textInput).css('float', 'left');
-
     $(OURCHESS.chessBoardDiv).css('width', OURCHESS.BOARD_SIZE + 8);
   }
 
@@ -119,4 +109,14 @@ jQuery.fn.center = function () {
 function dragDisable() {
   var t_preventDefault = function (evt) { evt.preventDefault(); };
   $(document).bind('dragstart', t_preventDefault).bind('selectstart', t_preventDefault);
+}
+
+function cleartheCanvas() {  
+  OURCHESS.theCanvas.width = OURCHESS.theCanvas.width;
+  OURCHESS.theCanvas.height = OURCHESS.theCanvas.height;
+}
+
+function cleartheDragCanvas() {
+  OURCHESS.theDragCanvas.width = OURCHESS.theDragCanvas.width;
+  OURCHESS.theDragCanvas.height = OURCHESS.theDragCanvas.height;
 }

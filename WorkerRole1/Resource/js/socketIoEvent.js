@@ -151,8 +151,7 @@ function opponentEvent() {
     }
 
     OURCHESS.theDragCanvas.style.visibility = 'hidden';
-    OURCHESS.theDragCanvas.width = OURCHESS.theDragCanvas.width;
-    OURCHESS.theDragCanvas.height = OURCHESS.theDragCanvas.height;
+    cleartheDragCanvas();
 
     var _isCheck = isDengerousOrSafe(OURCHESS.piecePosition, findMyKing(OURCHESS.piecePosition));
     if (_isCheck.bool) {
@@ -241,8 +240,7 @@ function guestEvent() {
     }
 
     OURCHESS.theDragCanvas.style.visibility = 'hidden';
-    OURCHESS.theDragCanvas.width = OURCHESS.theDragCanvas.width;
-    OURCHESS.theDragCanvas.height = OURCHESS.theDragCanvas.height;
+    cleartheDragCanvas();
 
     OURCHESS.theDragCanvas.style.marginLeft = '0px';
     OURCHESS.theDragCanvas.style.marginTop = '0px';
