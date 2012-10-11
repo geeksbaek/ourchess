@@ -6,10 +6,13 @@
   <meta name="google-site-verification" content="52qS3TIqJmPTifbsCO1b2OxXIIzqv1VTgrRvS-pD7Bs" />
   <link rel="shortcut icon" href="favicon.ico" />
   <link href='http://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css' />
-  <link rel="stylesheet" type="text/css" href="/css/lobby.css" />
   <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/rndstr.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/lobby.css" />
+
   <script>
     $(document).ready(function () {
       var socket = io.connect();
@@ -32,7 +35,7 @@
   <div id="gameEnter">
     <h1>Our Chess! Realtime Multiplayer</h1>
     <p>Connect Web Server With Socket.io</p>
-    <button id="create">CREATE ROOM</button><br />
+    <button id="create" class="btn btn-primary">CREATE ROOM <i class="icon-chevron-right icon-white"></i></button><br />
     <br />
   </div>
   <div id="contents">
