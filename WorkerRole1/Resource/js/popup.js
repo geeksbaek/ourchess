@@ -20,7 +20,24 @@ function disablePopup() {
   }
 }
 
-function popup(message, doNotAutoClose) {
+function popup(message, type, doNotAutoClose) {
+  $("#Popup").removeClass();
+
+  switch (type) {
+    case 'warning':
+      $("#Popup").addClass("alert alert-block");
+      break;
+    case 'fail':
+      $("#Popup").addClass("alert alert-error");
+      break;
+    case 'success':
+      $("#Popup").addClass("alert alert-success");
+      break;
+    case 'information':
+      $("#Popup").addClass("alert alert-info");
+      break;
+  }
+
   $('#contents').text(message);
   $('#Popup').center();
   loadPopup();

@@ -67,7 +67,7 @@ io.sockets.on('connection', function (socket) {
       socket.emit('id', { yourColor: 'B', opponentColor: 'W', yourId: socket.id.substring(0, 3), length: io.sockets.clients(data).length });
       socket.emit('setPosition', basicPosition);
       io.sockets.socket(io.sockets.clients(data)[0].id).emit('setPosition', basicPosition); // 새 게임
-      socket.broadcast.to(data).emit('gameStart', true);
+      io.sockets.in(data).emit('gameStart', true);
     } else if (io.sockets.clients(data).length >= 3) {
       socket.emit('id', { yourColor: 'Guest', yourId: socket.id.substring(0, 3), length: io.sockets.clients(data).length });
       io.sockets.socket(io.sockets.clients(data)[0].id).emit('getPosition', { id: socket.id });
@@ -156,7 +156,7 @@ io.sockets.on('connection', function (socket) {
             }
           } else if (socket.id == blackId) {
             socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Black disconnected. [' + (io.sockets.clients(room).length - 1) + ' in a room]' });
-            socket.broadcast.to(room).emit('gameEnd', { reason: 'Black disconnected.', message: 'White Wins!' });
+            socket.broadcast.to(room).emit('gameEnd', { reason: 'Black disconnected', message: 'White Wins!', winner: 'W' });
           } else {
             socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Guest[' + socket.id.substring(0, 3) + '] disconnected. [' + (io.sockets.clients(room).length - 1) + ' in a room]' });
           }

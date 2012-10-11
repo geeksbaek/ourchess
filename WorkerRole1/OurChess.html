@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes" />
   <title>Our Chess! Realtime Multiplayer "Room : <%= room %>"</title>
   <link rel="shortcut icon" href="/favicon.png" />
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <link href='http://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css' />
   <link rel="stylesheet" type="text/css" href="/css/ourChess.css">
   <link rel="stylesheet" type="text/css" href="/css/popup.css">
-  <link href='http://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css' />
-  <script src="http://code.jquery.com/jquery-latest.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/modernizr-1.6.min.js"></script>
   <script src="/js/popup.js"></script>
@@ -38,7 +40,7 @@
     <textarea id="record" readonly="readonly"></textarea>
     <input id="textInput" type="text" placeholder="send message.." />
   </div>
-  <div id="Popup">
+  <div id="Popup" class="alert alert-info">
     <span id="contents">This is my popup box</span>
   </div>
   <div id="bgPopup"></div>

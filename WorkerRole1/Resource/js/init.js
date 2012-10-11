@@ -21,6 +21,8 @@ function init(room) {
       blackColor: '#b58863',
       WhiteColor: '#f0d9b5',
 
+      gameOn: false,
+
       myId: null,
       myColor: null,
       enemyColor: null,
@@ -51,15 +53,20 @@ function init(room) {
     basicEvent();
 
     $("#bgPopup").data("state", 0);
+    $("#Popup").css('max-width', '50%');
+    $("#Popup").css('paddingRight', $("#Popup").css('paddingLeft'));
+
     $("#Popup").on('click', function () { disablePopup(); });
     $("#Popup").on('touchstart', function () { disablePopup(); });
-    $(OURCHESS.textInput).keyup(function (e) {
+
+    $(OURCHESS.textInput).keyup(function (e) { // 엔터 입력시 메시지 전송
       if (e.keyCode == 13 && $(OURCHESS.textInput).val() != '') {
         socket.emit('sendMessage', { name: OURCHESS.myColor == 'W' ? 'White' : OURCHESS.myColor == 'B' ? 'Black' : 'Guest[' + OURCHESS.myId + ']', message: $(OURCHESS.textInput).val() });
         $(OURCHESS.textInput).val('');
       }
     });
-    $(':input').live('focus', function () {
+
+    $(':input').live('focus', function () { // 자동완성 금지
       $(this).attr('autocomplete', 'off');
     });
   }

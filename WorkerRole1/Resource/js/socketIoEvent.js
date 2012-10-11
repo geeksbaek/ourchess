@@ -7,7 +7,7 @@
 
     if (OURCHESS.myColor == 'Guest') {
       guestEvent();
-      popup('You are observer.');
+      popup('You are observer.', 'information');
       socket.emit('sendMessage', { name: 'Server', message: 'Guest[' + OURCHESS.myId + '] connected. [' + data.length + ' in a room]' });
     } else {
       OURCHESS.enemyColor = data.opponentColor;
@@ -16,11 +16,11 @@
 
       if (OURCHESS.myColor == 'W') {
         whiteEvent();
-        popup('Copy the URL, and Send it to your friends to invite them to this match.', true);
+        popup('Copy the URL, and Send it to your friends to invite them to this match.', 'information', true);
         socket.emit('sendMessage', { name: 'Server', message: 'White connected. [' + data.length + ' in a room]' });
         socket.emit('sendMessage', { name: 'Server', message: 'Waiting for your opponent..' });
       } else {
-        popup('Game Start.');
+        popup('Game Start.', 'information');
         socket.emit('sendMessage', { name: 'Server', message: 'Black connected. [' + data.length + ' in a room]' });
       }
     }
@@ -40,6 +40,7 @@
       OURCHESS.recordingPosition.push({ position: OURCHESS.piecePosition.toString(), repetition: 1 });
     }
 
+    OURCHESS.gameOn = true;
     OURCHESS.check = false;
     OURCHESS.castle = true;
     OURCHESS.queenSideCastle = true;
@@ -48,16 +49,24 @@
     OURCHESS.threefoldRepetition = false;
 
     OURCHESS.oldPiecePosition = $.extend(true, [], OURCHESS.piecePosition);
-    popup('Black player connected. Game Start.');
+    popup('Black player connected. Game Start.', 'information');
   });
 
   socket.on('check', function () {
-    popup('Check!');
+    popup('Check!', 'warning');
   });
 
   socket.on('gameEnd', function (data) {
-    popup(data.reason + '. ' + data.message);
+    var winner = OURCHESS.myColor == 'Guest' || data.winner == 'draw' ? 'information' : OURCHESS.myColor == data.winner ? 'success' : 'fail';
+
+    if (OURCHESS.gameOn == true) {
+      popup(data.reason + '. ' + data.message, winner);
+    } else {
+      popup(data.reason + '. ', 'warning');
+    }
+
     OURCHESS.movePermission = false;
+    OURCHESS.gameOn = false;
 
     $(OURCHESS.record).text($(OURCHESS.record).text() + 'Server : ' + data.reason + '. ' + data.message + '\n');
     $(OURCHESS.record).scrollTop($(OURCHESS.record)[0].scrollHeight);
@@ -149,7 +158,7 @@ function opponentEvent() {
     if (_isCheck.bool) {
       if (isCheckmate(OURCHESS.piecePosition, findMyKing(OURCHESS.piecePosition), _isCheck.attacker).bool) {
         OURCHESS.movePermission = false;
-        socket.emit('gameEnd', { reason: 'Checkmate', message: OURCHESS.myColor == 'W' ? 'Black Wins!' : 'White Wins!' });
+        socket.emit('gameEnd', { reason: 'Checkmate', message: OURCHESS.myColor == 'W' ? 'Black Wins!' : 'White Wins!', winner: OURCHESS.enemyColor });
       } else {
         OURCHESS.check = true;
         socket.emit('check');
@@ -159,7 +168,7 @@ function opponentEvent() {
       var _isDraw = isDraw(OURCHESS.piecePosition);
       if (_isDraw.bool) {
         OURCHESS.movePermission = false;
-        socket.emit('gameEnd', { reason: _isDraw.reason, message: 'Draw' });
+        socket.emit('gameEnd', { reason: _isDraw.reason, message: 'Draw', winner: 'draw'});
       } else {
         OURCHESS.check = false;
       }
@@ -225,7 +234,7 @@ function guestEvent() {
       if (data.possible == false) {
         drawPieceX(OURCHESS.context, data.piece, Math.abs(7 - data.point.x), Math.abs(7 - data.point.y));
       } else {
-        setPosition(piecePosition, { x: Math.abs(7 - data.start.x), y: Math.abs(7 - data.start.y) }, { x: Math.abs(7 - data.end.x), y: Math.abs(7 - data.end.y) }, data.piece);
+        setPosition(OURCHESS.piecePosition, { x: Math.abs(7 - data.start.x), y: Math.abs(7 - data.start.y) }, { x: Math.abs(7 - data.end.x), y: Math.abs(7 - data.end.y) }, data.piece);
         drawSquare(OURCHESS.context, Math.abs(7 - data.end.x), Math.abs(7 - data.end.y)); // 캡쳐된 기물 지우기 (todo. 페이드 효과 추가)
         drawPieceX(OURCHESS.context, data.piece, Math.abs(7 - data.end.x), Math.abs(7 - data.end.y));
       }
