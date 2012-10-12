@@ -38,6 +38,7 @@
       OURCHESS.movePermission = true;
       OURCHESS.recordingPosition = [];
       OURCHESS.recordingPosition.push({ position: OURCHESS.piecePosition.toString(), repetition: 1 });
+      popup('Black player connected. Game Start.', 'information');
     }
 
     OURCHESS.gameOn = true;
@@ -49,7 +50,6 @@
     OURCHESS.threefoldRepetition = false;
 
     OURCHESS.oldPiecePosition = $.extend(true, [], OURCHESS.piecePosition);
-    popup('Black player connected. Game Start.', 'information');
   });
 
   socket.on('check', function () {
