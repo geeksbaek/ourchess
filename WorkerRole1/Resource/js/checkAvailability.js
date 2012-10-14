@@ -532,7 +532,16 @@ function isEnPassant(nowPosition, oldPosition, pawn, end, enemyPawn) {
 
 function isCheckmate(position, king, attacker) {
   // 킹이 도망갈 곳이 있는지 검사
-  function isAbleToMoveTheKing(x, y) { try { if (position[y][x].charAt(0) != OURCHESS.myColor) { return !isDengerousOrSafe(position, { x: x, y: y }).bool; } else { return false; } } catch (e) { } }
+  function isAbleToMoveTheKing(x, y) {
+    try {
+      if (position[y][x].charAt(0) != OURCHESS.myColor) {
+        var previewPosition = $.extend(true, [], position);
+        setPosition(previewPosition, king, { x: x, y: y }, position[y][x]);
+
+        return !isDengerousOrSafe(previewPosition, { x: x, y: y }).bool;
+      } else { return false; }
+    } catch (e) { }
+  }
 
   for (var i = king.x - 1; i <= king.x + 1; i++) {
     for (var j = king.y - 1; j <= king.y + 1; j++) {
