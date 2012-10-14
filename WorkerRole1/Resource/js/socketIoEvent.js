@@ -7,7 +7,9 @@
 
     if (OURCHESS.myColor == 'Guest') {
       guestEvent();
-      popup('You are observer.', 'information');
+      setTimeout(function () {
+        popup('You are observer.', 'information');
+      }, 1000);
       socket.emit('sendMessage', { name: 'Server', message: 'Guest[' + OURCHESS.myId + '] connected. [' + data.length + ' in a room]' });
     } else {
       OURCHESS.enemyColor = data.opponentColor;
@@ -16,11 +18,15 @@
 
       if (OURCHESS.myColor == 'W') {
         whiteEvent();
-        popup('Copy the URL, and Send it to your friends to invite them to this match.', 'information', true);
+        setTimeout(function () {
+          popup('Copy the URL, and Send it to your friends to invite them to this match.', 'information', true);
+        }, 1000);
         socket.emit('sendMessage', { name: 'Server', message: 'White connected. [' + data.length + ' in a room]' });
         socket.emit('sendMessage', { name: 'Server', message: 'Waiting for your opponent..' });
       } else {
-        popup('Game Start.', 'information');
+        setTimeout(function () {
+          popup('Game Start.', 'information');
+        }, 1000);
         socket.emit('sendMessage', { name: 'Server', message: 'Black connected. [' + data.length + ' in a room]' });
       }
     }
@@ -29,8 +35,11 @@
   socket.on('setPosition', function (data) {
     OURCHESS.piecePosition = OURCHESS.myColor == 'B' ? rotateBoard(data) : data;
     OURCHESS.oldPiecePosition = $.extend(true, [], OURCHESS.piecePosition);
-    draw();
-    $('#chessBoard').fadeIn(500);
+
+    setTimeout(function () {
+      setRayout();
+      draw();
+    }, 100);
   });
 
   socket.on('gameStart', function (data) {
@@ -68,13 +77,13 @@
     OURCHESS.movePermission = false;
     OURCHESS.gameOn = false;
 
-    $(OURCHESS.record).text($(OURCHESS.record).text() + 'Server : ' + data.reason + '. ' + data.message + '\n');
-    $(OURCHESS.record).scrollTop($(OURCHESS.record)[0].scrollHeight);
+    OURCHESS.record.text(OURCHESS.record.text() + 'Server : ' + data.reason + '. ' + data.message + '\n');
+    OURCHESS.record.scrollTop(OURCHESS.record[0].scrollHeight);
   });
 
   socket.on('chatMessage', function (data) {
-    $(OURCHESS.record).text($(OURCHESS.record).text() + data.name + ' : ' + data.message + '\n');
-    $(OURCHESS.record).scrollTop($(OURCHESS.record)[0].scrollHeight);
+    OURCHESS.record.text(OURCHESS.record.text() + data.name + ' : ' + data.message + '\n');
+    OURCHESS.record.scrollTop(OURCHESS.record[0].scrollHeight);
   });
 
   socket.on('playSoundGuys', function (data) {
@@ -116,12 +125,26 @@ function opponentEvent() {
   socket.on('dragStart_opponent', function (data) {
     drawSquare(OURCHESS.context, Math.abs(7 - data.drawSquare.x), Math.abs(7 - data.drawSquare.y));
     drawPieceX(OURCHESS.dragContext, data.piece, 0, 0);
-    OURCHESS.theDragCanvas.style.visibility = 'visible';
+    $(OURCHESS.theDragCanvas).css('visibility', 'visible');
   });
 
   socket.on('drag_opponent', function (data) {
-    $(OURCHESS.theDragCanvas).css('top', 0 - (data.top * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) - (OURCHESS.PIECE_SIZE / 2) + (OURCHESS.PIECE_SIZE * 8) + ($(OURCHESS.theCanvas).outerWidth() - $(OURCHESS.theCanvas).width()));
-    $(OURCHESS.theDragCanvas).css('left', 0 - (data.left * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) - (OURCHESS.PIECE_SIZE / 2) + (OURCHESS.PIECE_SIZE * 8) + ($(OURCHESS.theCanvas).outerWidth() - $(OURCHESS.theCanvas).width()));
+    $(OURCHESS.theDragCanvas).css('top',
+        0 -
+        (data.top * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) -
+        (OURCHESS.PIECE_SIZE / 2) +
+        (OURCHESS.PIECE_SIZE * 8) +
+        ($(OURCHESS.theCanvas).outerWidth() - $(OURCHESS.theCanvas).width()) +
+        Number(OURCHESS.chessBoardDiv.css('paddingLeft').replace('px', ''))
+      );
+    $(OURCHESS.theDragCanvas).css('left',
+        0 -
+        (data.left * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) -
+        (OURCHESS.PIECE_SIZE / 2) +
+        (OURCHESS.PIECE_SIZE * 8) +
+        ($(OURCHESS.theCanvas).outerWidth() - $(OURCHESS.theCanvas).width()) +
+        Number(OURCHESS.chessBoardDiv.css('paddingLeft').replace('px', ''))
+      );
   });
 
   socket.on('dragEnd_opponent', function (data) {
@@ -150,7 +173,7 @@ function opponentEvent() {
       }
     }
 
-    OURCHESS.theDragCanvas.style.visibility = 'hidden';
+    $(OURCHESS.theDragCanvas).css('visibility', 'hidden');
     cleartheDragCanvas();
 
     var _isCheck = isDengerousOrSafe(OURCHESS.piecePosition, findMyKing(OURCHESS.piecePosition));
@@ -167,7 +190,7 @@ function opponentEvent() {
       var _isDraw = isDraw(OURCHESS.piecePosition);
       if (_isDraw.bool) {
         OURCHESS.movePermission = false;
-        socket.emit('gameEnd', { reason: _isDraw.reason, message: 'Draw', winner: 'draw'});
+        socket.emit('gameEnd', { reason: _isDraw.reason, message: 'Draw', winner: 'draw' });
       } else {
         OURCHESS.check = false;
       }
@@ -202,21 +225,43 @@ function guestEvent() {
     if (data.myColor == 'W') { // 백의 이동에 대한 게스트 보드의 움직임
       drawSquare(OURCHESS.context, data.drawSquare.x, data.drawSquare.y);
       drawPieceX(OURCHESS.dragContext, data.piece, 0, 0);
-      OURCHESS.theDragCanvas.style.visibility = 'visible';
+      $(OURCHESS.theDragCanvas).style.visibility = 'visible';
     } else if (data.myColor == 'B') { // 흑의 이동에 대한 게스트 보드의 움직임
       drawSquare(OURCHESS.context, Math.abs(7 - data.drawSquare.x), Math.abs(7 - data.drawSquare.y));
       drawPieceX(OURCHESS.dragContext, data.piece, 0, 0);
-      OURCHESS.theDragCanvas.style.visibility = 'visible';
+      $(OURCHESS.theDragCanvas).style.visibility = 'visible';
     }
   });
 
   socket.on('drag_guest', function (data) {
     if (data.myColor == 'W') { // 백의 이동에 대한 게스트 보드의 움직임
-      $(OURCHESS.theDragCanvas).css('top', (data.top * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) - (OURCHESS.PIECE_SIZE / 2));
-      $(OURCHESS.theDragCanvas).css('left', (data.left * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) - (OURCHESS.PIECE_SIZE / 2));
+      $(OURCHESS.theDragCanvas).css('top',
+          (data.top * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) -
+          (OURCHESS.PIECE_SIZE / 2) +
+          Number(OURCHESS.chessBoardDiv.css('paddingLeft').replace('px', ''))
+        );
+      $(OURCHESS.theDragCanvas).css('left',
+          (data.left * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) -
+          (OURCHESS.PIECE_SIZE / 2) +
+          Number(OURCHESS.chessBoardDiv.css('paddingLeft').replace('px', ''))
+        );
     } else if (data.myColor == 'B') { // 흑의 이동에 대한 게스트 보드의 움직임
-      $(OURCHESS.theDragCanvas).css('top', 0 - (data.top * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) - (OURCHESS.PIECE_SIZE / 2) + (OURCHESS.PIECE_SIZE * 8) + ($(OURCHESS.theCanvas).outerWidth() - $(OURCHESS.theCanvas).width()));
-      $(OURCHESS.theDragCanvas).css('left', 0 - (data.left * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) - (OURCHESS.PIECE_SIZE / 2) + (OURCHESS.PIECE_SIZE * 8) + ($(OURCHESS.theCanvas).outerWidth() - $(OURCHESS.theCanvas).width()));
+      $(OURCHESS.theDragCanvas).css('top',
+          0 -
+          (data.top * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) -
+          (OURCHESS.PIECE_SIZE / 2) +
+          (OURCHESS.PIECE_SIZE * 8) +
+          ($(OURCHESS.theCanvas).outerWidth() - $(OURCHESS.theCanvas).width()) +
+          Number(OURCHESS.chessBoardDiv.css('paddingLeft').replace('px', ''))
+        );
+      $(OURCHESS.theDragCanvas).css('left',
+          0 -
+          (data.left * (OURCHESS.PIECE_SIZE / data.PIECE_SIZE)) -
+          (OURCHESS.PIECE_SIZE / 2) +
+          (OURCHESS.PIECE_SIZE * 8) +
+          ($(OURCHESS.theCanvas).outerWidth() - $(OURCHESS.theCanvas).width()) +
+          Number(OURCHESS.chessBoardDiv.css('paddingLeft').replace('px', ''))
+        );
     }
   });
 
@@ -239,11 +284,11 @@ function guestEvent() {
       }
     }
 
-    OURCHESS.theDragCanvas.style.visibility = 'hidden';
+    $(OURCHESS.theDragCanvas).style.visibility = 'hidden';
     cleartheDragCanvas();
 
-    OURCHESS.theDragCanvas.style.marginLeft = '0px';
-    OURCHESS.theDragCanvas.style.marginTop = '0px';
+    $(OURCHESS.theDragCanvas).style.marginLeft = '0px';
+    $(OURCHESS.theDragCanvas).style.marginTop = '0px';
   });
 }
 

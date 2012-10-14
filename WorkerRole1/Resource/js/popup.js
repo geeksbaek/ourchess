@@ -1,10 +1,10 @@
 ﻿function loadPopup(callback) {
   //loads popup only if it is disabled  
-  if ($("#bgPopup").data("state") == 0) {
-    $("#bgPopup").css({ "opacity": "0.7" });
-    $("#bgPopup").fadeIn("medium");
-    $("#Popup").fadeIn("medium");
-    $("#bgPopup").data("state", 1);
+  if (OURCHESS.bgPopup.data("state") == 0) {
+    OURCHESS.bgPopup.css({ "opacity": "0.7" });
+    OURCHESS.bgPopup.fadeIn("medium");
+    OURCHESS.Popup.fadeIn("medium");
+    OURCHESS.bgPopup.data("state", 1);
 
     if (typeof callback != 'undefined') {
       callback();
@@ -13,33 +13,33 @@
 }
 
 function disablePopup() {
-  if ($("#bgPopup").data("state") == 1) {
-    $("#bgPopup").fadeOut("medium");
-    $("#Popup").fadeOut("medium");
-    $("#bgPopup").data("state", 0);
+  if (OURCHESS.bgPopup.data("state") == 1) {
+    OURCHESS.bgPopup.fadeOut("medium");
+    OURCHESS.Popup.fadeOut("medium");
+    OURCHESS.bgPopup.data("state", 0);
   }
 }
 
 function popup(message, type, doNotAutoClose) {
-  $("#Popup").removeClass();
+  OURCHESS.Popup.removeClass();
 
   switch (type) {
     case 'warning':
-      $("#Popup").addClass("alert alert-block");
+      OURCHESS.Popup.addClass("alert alert-block");
       break;
     case 'fail':
-      $("#Popup").addClass("alert alert-error");
+      OURCHESS.Popup.addClass("alert alert-error");
       break;
     case 'success':
-      $("#Popup").addClass("alert alert-success");
+      OURCHESS.Popup.addClass("alert alert-success");
       break;
     case 'information':
-      $("#Popup").addClass("alert alert-info");
+      OURCHESS.Popup.addClass("alert alert-info");
       break;
   }
 
-  $('#contents').text(message);
-  $('#Popup').center();
+  OURCHESS.contents.text(message);
+  OURCHESS.Popup.center();
   loadPopup();
 
   if (!doNotAutoClose) {

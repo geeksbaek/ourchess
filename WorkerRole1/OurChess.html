@@ -6,13 +6,14 @@
   <title>Our Chess! Realtime Multiplayer "Room : <%= room %>"</title>
   <link rel="shortcut icon" href="/favicon.png" />
   <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script src="/js/PxLoader.js"></script>
+  <script src="/js/PxLoaderImage.js"></script>
   <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
   <script src="/bootstrap/js/bootstrap.min.js"></script>
   <link href='http://fonts.googleapis.com/css?family=Nunito:300' rel='stylesheet' type='text/css' />
   <link rel="stylesheet" type="text/css" href="/css/ourChess.css">
   <link rel="stylesheet" type="text/css" href="/css/popup.css">
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/modernizr-1.6.min.js"></script>
   <script src="/js/popup.js"></script>
   <script src="/js/checkAvailability.js"></script>
   <script src="/js/piecePosition.js"></script>
@@ -20,23 +21,9 @@
   <script src="/js/dragAndDrop.js"></script>
   <script src="/js/socketIoEvent.js"></script>
   <script src="/js/init.js"></script>
-  <script type="text/javascript">var switchTo5x = true;</script>
-  <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
-  <script type="text/javascript" src="http://s.sharethis.com/loader.js"></script>
-  <script type="text/javascript">stLight.options({ publisher: "0057fd7a-f2cd-46d1-a96c-ea3c978b757c" });</script>
   <script>
-    var options = { "publisher": "0057fd7a-f2cd-46d1-a96c-ea3c978b757c", "position": "left", "ad": { "visible": false, "openDelay": 5, "closeDelay": 0 }, "chicklets": { "items": ["facebook", "twitter", "sharethis"] } };
-    var st_hover_widget = new sharethis.widgets.hoverbuttons(options);
-  </script>
-  <script>
-    $(window).load(function () { init('<%= room %>'); });
-    $(window).resize(function () {
-      setRayout();
-      cleartheCanvas();
-      draw();
-      $(OURCHESS.chessBoardDiv).center();
-      $('#Popup').center();
-    });
+    $(window).load(function () { preloadImage('<%= room %>'); });
+    $(window).resize(function () { onResize(); });
   </script>
 </head>
 <body>
@@ -50,5 +37,9 @@
     <span id="contents">This is my popup box</span>
   </div>
   <div id="bgPopup"></div>
+  <div id="progress" class="progress progress-striped active">
+    <div id="progressbar" class="bar"></div>
+    <a>Loading...</a>
+  </div>
 </body>
 </html>

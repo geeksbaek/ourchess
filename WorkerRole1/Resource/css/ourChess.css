@@ -2,9 +2,18 @@
   font-family: 'Nunito', 'Malgun Gothic', sans-serif;
 }
 
+#progress {
+  display: none;
+}
+
+#progressbar {
+  width: 0;
+}
+
 #chessBoard {
+  display: none;
   width: auto;
-  padding: 0px;
+  padding: 1%;
   opacity: 0.95;
 }
 
@@ -73,40 +82,4 @@ body {
 
 .button {
   top: 200px;
-}
-
-@media all and (max-width:719px) and (orientation : portrait) {
-  #record {
-    margin: 4px 0 4px 0;
-    float: left;
-  }
-
-  #textInput {
-    margin: 0;
-    float: left;
-  }
-}
-
-@media all and (min-width:720px) {
-  #record {
-    margin: 0 0 4px 4px;
-    float: right;
-  }
-
-  #textInput {
-    margin: 0 0 0 4px;
-    float: right;
-  }
-}
-
-@media all and (orientation : landscape) {
-  #record {
-    margin: 0 0 4px 4px;
-    float: right;
-  }
-
-  #textInput {
-    margin: 0 0 0 4px;
-    float: right;
-  }
 }
