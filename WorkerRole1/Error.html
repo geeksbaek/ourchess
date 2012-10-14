@@ -2,37 +2,40 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes" />
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script>
-        $(window).load(function () {
-            setImage();
-            $('body').hide();
-            $('body').fadeIn(300);
-        });
-        $(window).resize(setImage);
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=yes" />
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script>
+    $(window).load(function () {
+      $('#errorImage').center();
+      $('#errorImage').fadeIn(300);
+    });
+    $(window).resize(function () { $('#errorImage').center(); });
 
-        function setImage() {
-            $('#errorImage').css("position", "absolute");
+    jQuery.fn.center = function () {
+      this.css("position", "absolute");
+      this.css("top", Math.max(0, (($(window).height() - this.outerHeight()) / 2)));
+      this.css("left", Math.max(0, (($(window).width() - this.outerWidth()) / 2)));
+    }
+  </script>
+  <style>
+    @media all and (orientation: landscape) {
+      #errorImage {
+        height: 70%;
+        width: auto;
+      }
+    }
 
-            if ($(window).height() > $(window).width()) {
-                $('#errorImage').css('height', 'auto');
-                $('#errorImage').css('width', '70%');
-            } else {
-                $('#errorImage').css('width', 'auto');
-                $('#errorImage').css('height', '70%');
-            }
-
-            $('#errorImage').css("left", Math.max(0, (($(window).width() - $('#errorImage').outerWidth()) / 2)));
-            $('#errorImage').css("top", Math.max(0, (($(window).height() - $('#errorImage').outerHeight()) / 2)));
-        }
-    </script>
-    <title>404 Not Found</title>
+    @media all and (orientation: portrait) {
+      #errorImage {
+        height: auto;
+        width: 70%;
+      }
+    }
+  </style>
+  <title>404 Not Found</title>
 </head>
 <body>
-    <div id="errorImageDiv">
-        <img id="errorImage" src="/img/troll-sad-troll-face.png" />
-    </div>
+  <img id="errorImage" src="/img/troll-sad-troll-face.png" style="display: none;" />
 </body>
 </html>
