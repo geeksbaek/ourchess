@@ -213,6 +213,7 @@ function preloadImage(room) {
 
   loader.addCompletionListener(function () {
     init(room, ret);
+    
     setTimeout(function () {
       progress.fadeOut(500);
       OURCHESS.chessBoardDiv.fadeIn(500);

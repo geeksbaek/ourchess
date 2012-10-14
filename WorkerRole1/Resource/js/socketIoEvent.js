@@ -39,7 +39,7 @@
     setTimeout(function () {
       setRayout();
       draw();
-    }, 100);
+    }, 700);
   });
 
   socket.on('gameStart', function (data) {
