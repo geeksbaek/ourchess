@@ -9,7 +9,7 @@
       guestEvent();
       setTimeout(function () {
         popup('You are observer.', 'information');
-      }, 1000);
+      }, 800);
       socket.emit('sendMessage', { name: 'Server', message: 'Guest[' + OURCHESS.myId + '] connected. [' + data.length + ' in a room]' });
     } else {
       OURCHESS.enemyColor = data.opponentColor;
@@ -20,13 +20,13 @@
         whiteEvent();
         setTimeout(function () {
           popup('Copy the URL, and Send it to your friends to invite them to this match.', 'information', true);
-        }, 1000);
+        }, 800);
         socket.emit('sendMessage', { name: 'Server', message: 'White connected. [' + data.length + ' in a room]' });
         socket.emit('sendMessage', { name: 'Server', message: 'Waiting for your opponent..' });
       } else {
         setTimeout(function () {
           popup('Game Start.', 'information');
-        }, 1000);
+        }, 800);
         socket.emit('sendMessage', { name: 'Server', message: 'Black connected. [' + data.length + ' in a room]' });
       }
     }
@@ -37,9 +37,10 @@
     OURCHESS.oldPiecePosition = $.extend(true, [], OURCHESS.piecePosition);
 
     setTimeout(function () {
+      OURCHESS.chessBoardDiv.fadeIn(200);
       setRayout();
       draw();
-    }, 700);
+    }, 500);
   });
 
   socket.on('gameStart', function (data) {

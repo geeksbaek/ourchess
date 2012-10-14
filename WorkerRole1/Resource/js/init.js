@@ -213,11 +213,10 @@ function preloadImage(room) {
 
   loader.addCompletionListener(function () {
     init(room, ret);
-    
+
     setTimeout(function () {
-      progress.fadeOut(500);
-      OURCHESS.chessBoardDiv.fadeIn(500);
-    }, 700);
+      progress.fadeOut(300);
+    }, 500);
   });
 
   loader.start();
