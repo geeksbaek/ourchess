@@ -23,7 +23,7 @@ function mouseDownEvent(e) {
     left: event.clientX - $(OURCHESS.theCanvas).offset().left
   });
 
-  OURCHESS.theDragCanvas.style.visibility = 'visible';
+  $(OURCHESS.theDragCanvas).css('visibility', 'visible');
 
   setPointXY(event); // 드래그 캔버스의 위치를 현재 마우스 커서로 지정    
 
@@ -90,7 +90,7 @@ function mouseUpEvent(e) {
     OURCHESS.movePermission = false;
   }
 
-  OURCHESS.theDragCanvas.style.visibility = 'hidden';
+  $(OURCHESS.theDragCanvas).css('visibility', 'hidden');
   OURCHESS.theDragCanvas.width = OURCHESS.theDragCanvas.width;
   OURCHESS.theDragCanvas.height = OURCHESS.theDragCanvas.height;
 

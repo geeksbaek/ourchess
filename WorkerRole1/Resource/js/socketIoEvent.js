@@ -226,11 +226,11 @@ function guestEvent() {
     if (data.myColor == 'W') { // 백의 이동에 대한 게스트 보드의 움직임
       drawSquare(OURCHESS.context, data.drawSquare.x, data.drawSquare.y);
       drawPieceX(OURCHESS.dragContext, data.piece, 0, 0);
-      $(OURCHESS.theDragCanvas).style.visibility = 'visible';
+      $(OURCHESS.theDragCanvas).css('visibility', 'visible');
     } else if (data.myColor == 'B') { // 흑의 이동에 대한 게스트 보드의 움직임
       drawSquare(OURCHESS.context, Math.abs(7 - data.drawSquare.x), Math.abs(7 - data.drawSquare.y));
       drawPieceX(OURCHESS.dragContext, data.piece, 0, 0);
-      $(OURCHESS.theDragCanvas).style.visibility = 'visible';
+      $(OURCHESS.theDragCanvas).css('visibility', 'visible');
     }
   });
 
@@ -285,11 +285,11 @@ function guestEvent() {
       }
     }
 
-    $(OURCHESS.theDragCanvas).style.visibility = 'hidden';
+    $(OURCHESS.theDragCanvas).css('visibility', 'hidden');
     cleartheDragCanvas();
 
-    $(OURCHESS.theDragCanvas).style.marginLeft = '0px';
-    $(OURCHESS.theDragCanvas).style.marginTop = '0px';
+    $(OURCHESS.theDragCanvas).css('marginLeft', '0px');
+    $(OURCHESS.theDragCanvas).css('marginTop', '0px');
   });
 }
 
