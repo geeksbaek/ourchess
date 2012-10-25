@@ -1,4 +1,13 @@
-개발 노트.
+## 지원하는 브라우저 ##
+
+1. IE 10
+2. Chrome (Android 버전 포함)
+3. Firefox
+
+다른 브라우저에서는 테스트하지 않아서 동작을 보장할 수 없음
+
+
+## 개발 노트 ##
 
 ● 2012년 10월 4일.
 
@@ -16,9 +25,7 @@
 
 로비 페이지에 기부 버튼을 넣고 체스 경기 페이지에 현재 페이지를 공유할 수 있는 버튼을 추가했다.
 
-크롬 웹 스토어에 이 프로젝트를 웹 앱으로 등록했다. 처음 등록하는거라 구글 개발자 수수료 5달러도 결제했다. 플레이하는 사람이 있을까 싶지만... 등록되서 URL은 나왔는데 아직 검색은 되지 않고 있다.
-
-https://chrome.google.com/webstore/detail/our-chess-realtime-multip/dbcefjdohnffkpfllpmhlmhcmhodnkgp?hl=ko
+[크롬 웹 스토어](https://chrome.google.com/webstore/detail/our-chess-realtime-multip/dbcefjdohnffkpfllpmhlmhcmhodnkgp?hl=ko)에 이 프로젝트를 웹 앱으로 등록했다. 처음 등록하는거라 구글 개발자 수수료 5달러도 결제했다. 플레이하는 사람이 있을까 싶지만... 등록되서 URL은 나왔는데 아직 검색은 되지 않고 있다.
 
 ● 2012년 9월 29일.
 
