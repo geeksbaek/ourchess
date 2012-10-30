@@ -148,20 +148,22 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     socket.get('room', function (error, room) {
-      socket.get('whiteId', function (error, whiteId) {
-        socket.get('blackId', function (error, blackId) {
-          if (socket.id == whiteId) {
-            for (var i = 0, max = io.sockets.clients(room).length; i < max; i++) {
-              io.sockets.socket(io.sockets.clients(room)[i].id).emit('roomBrokenByWhite');
+      if (room != null) {
+        socket.get('whiteId', function (error, whiteId) {
+          socket.get('blackId', function (error, blackId) {
+            if (socket.id == whiteId) {
+              for (var i = 0, max = io.sockets.clients(room).length; i < max; i++) {
+                io.sockets.socket(io.sockets.clients(room)[i].id).emit('roomBrokenByWhite');
+              }
+            } else if (socket.id == blackId) {
+              socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Black disconnected. [' + (io.sockets.clients(room).length - 1) + ' in a room]' });
+              socket.broadcast.to(room).emit('gameEnd', { reason: 'Black disconnected', message: 'White Wins!', winner: 'W' });
+            } else {
+              socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Guest[' + socket.id.substring(0, 3) + '] disconnected. [' + (io.sockets.clients(room).length - 1) + ' in a room]' });
             }
-          } else if (socket.id == blackId) {
-            socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Black disconnected. [' + (io.sockets.clients(room).length - 1) + ' in a room]' });
-            socket.broadcast.to(room).emit('gameEnd', { reason: 'Black disconnected', message: 'White Wins!', winner: 'W' });
-          } else {
-            socket.broadcast.to(room).emit('chatMessage', { name: 'Server', message: 'Guest[' + socket.id.substring(0, 3) + '] disconnected. [' + (io.sockets.clients(room).length - 1) + ' in a room]' });
-          }
+          });
         });
-      });
+      }
     });
   });
 });
