@@ -1,5 +1,5 @@
 {
-  "name": "ourChess",
+  "name": "ourchess",
   "version": "0.1.5",
   "description": "ourChess",
   "main": "index.js",
@@ -7,21 +7,28 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "connect": "1.8.5",
     "ejs": "0.6.1",
-    "socket.io": "0.9.10",
-    "connect": "1.8.5"
+    "express": "^4.13.3",
+    "socket.io": "0.9.10"
   },
   "engines": {
     "node": "4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/geeksbaek/ourChess"
+    "url": "git+https://github.com/geeksbaek/ourChess.git"
   },
   "keywords": [
     "node",
     "heroku",
     "chess"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/geeksbaek/ourChess/issues"
+  },
+  "homepage": "https://github.com/geeksbaek/ourChess#readme",
+  "devDependencies": {},
+  "author": ""
 }

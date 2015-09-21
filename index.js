@@ -1,8 +1,10 @@
-﻿var connect = require('connect');
-var ejs = require('ejs');
+var express = require('express');
+var io = require('socket.io');
 var fs = require('fs');
-var socketio = require('socket.io');
-
+var app = express()
+  , server = require('http').createServer(app)
+  , io = io.listen(server);
+  
 var basicPosition = [
             ['BR', 'BN', 'BB', 'BQ', 'BK', 'BB', 'BN', 'BR'],
             ['BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP', 'BP'],
@@ -14,41 +16,33 @@ var basicPosition = [
             ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
 ];
 
-var server = connect.createServer();
+app.use(express.static(__dirname + '/Resource'));
+app.set('view engine', 'ejs');
 
-// Router 미들웨어를 사용합니다.
-server.use(connect.router(function (app) {
-  app.get('/', function (request, response) {
-    fs.readFile('Lobby.html', function (error, data) {
-      response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.end(data);
-    });
+app.get('/', function(req, res) {
+  fs.readFile('Lobby.html', function (error, data) {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(data);
   });
+});
 
-  app.get('/Error', function (request, response) {
-    fs.readFile('Error.html', function (error, data) {
-      response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.end(data);
-    });
+app.get('/Error', function(req, res) {
+  fs.readFile('Error.html', function (error, data) {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(data);
   });
+});
 
-  app.get('/chess/:room', function (request, response) {
-    fs.readFile('OurChess.html', 'utf8', function (error, data) {
-      response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.end(ejs.render(data, {
-        room: request.params.room
-      }));
-    });
+app.get('/chess/:room', function(req, res) {
+  fs.readFile('OurChess.html', 'utf8', function (error, data) {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(ejs.render(data, {
+      room: req.params.room
+    }));
   });
-}));
+});
 
-// Static 미들웨어를 사용합니다.
-server.use(connect.static(__dirname + '/Resource'));
-
-server.listen(process.env.port || 1337);
-
-// 소켓 서버를 생성 및 실행합니다.
-var io = socketio.listen(server);
+var server = app.listen(3000);
 
 io.set("polling duration", 10);
 io.set('log level', 2);
