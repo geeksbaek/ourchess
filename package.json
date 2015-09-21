@@ -1,0 +1,27 @@
+{
+  "name": "ourChess",
+  "version": "0.1.5",
+  "description": "ourChess",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ejs": "0.6.1",
+    "socket.io": "0.9.10",
+    "connect": "1.8.5"
+  },
+  "engines": {
+    "node": "0.12.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geeksbaek/ourChess"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "chess"
+  ],
+  "license": "MIT"
+}
