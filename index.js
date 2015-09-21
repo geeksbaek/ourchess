@@ -45,10 +45,7 @@ app.get('/chess/:room', function(req, res) {
 
 var server = app.listen(3000);
 
-io.set("polling duration", 10);
-io.set('log level', 2);
-
-io.sockets.on('connection', function (socket) {
+io.on('connection', function(socket){
   socket.on('join', function (data) {
     socket.join(data);
     socket.set('room', data);

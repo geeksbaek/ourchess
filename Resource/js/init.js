@@ -1,5 +1,5 @@
 function init(room, loadedPiece) {
-  this.socket = io.connect();
+  this.socket = io();
 
   window.OURCHESS = {
     room: room,
@@ -69,9 +69,9 @@ function init(room, loadedPiece) {
     }
   });
 
-  $(':input').live('focus', function () { // 자동완성 금지
-    $(this).attr('autocomplete', 'off');
-  });
+  // $(':input').live('focus', function () { // 자동완성 금지
+  //   $(this).attr('autocomplete', 'off');
+  // });
 }
 
 
