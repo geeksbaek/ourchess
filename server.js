@@ -29,12 +29,6 @@ var basicPosition = [
   ['WR', 'WN', 'WB', 'WQ', 'WK', 'WB', 'WN', 'WR']
 ];
 
-// view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -63,37 +57,6 @@ app.get('/chess/:room', function (request, response) {
 		}));
 	});
 });
-
-// catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   var err = new Error('Not Found');
-//   err.status = 404;
-//   next(err);
-// });
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-// if (app.get('env') === 'development') {
-//   app.use(function(err, req, res, next) {
-//     res.status(err.status || 500);
-//     res.render('error', {
-//       message: err.message,
-//       error: err
-//     });
-//   });
-// }
-
-// production error handler
-// no stacktraces leaked to user
-// app.use(function(err, req, res, next) {
-//   res.status(err.status || 500);
-//   res.render('error', {
-//     message: err.message,
-//     error: {}
-//   });
-// });
 
 io.set("polling duration", 10);
 io.set('log level', 2);
@@ -133,7 +96,7 @@ io.on('connection', function (socket) {
         socket.broadcast.to(socket.room).emit('chatMessage', { name: 'Server', message: 'Black disconnected. [' + (Object.keys(io.nsps[defaultNsps].adapter.rooms[socket.room]).length - 1) + ' in a room]' });
         socket.broadcast.to(socket.room).emit('gameEnd', { reason: 'Black disconnected', message: 'White Wins!', winner: 'W' });
       } else {
-        // socket.broadcast.to(socket.room).emit('chatMessage', { name: 'Server', message: 'Guest[' + socket.id.substring(0, 3) + '] disconnected. [' + (Object.keys(io.of(defaultNsps).clients(socket.room)).length - 1) + ' in a room]' });
+        socket.broadcast.to(socket.room).emit('chatMessage', { name: 'Server', message: 'Guest[' + socket.id.substring(0, 3) + '] disconnected. [' + (Object.keys(io.nsps[defaultNsps].adapter.rooms[socket.room]).length - 1) + ' in a room]' });
       }
     }
   });
