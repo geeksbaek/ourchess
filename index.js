@@ -82,7 +82,7 @@ io.on('connection', function (socket) {
       io.sockets.in(data).emit('gameStart', true);
     } else if (Object.keys(io.nsps[defaultNsps].adapter.rooms[data]).length >= 3) {
       socket.emit('id', { yourColor: 'Guest', yourId: socket.id.substring(0, 3), length: Object.keys(io.nsps[defaultNsps].adapter.rooms[data]).length });
-      // io.sockets.connected[Object.keys(io.nsps[defaultNsps].adapter.rooms[data])[0]].emit('getPosition', { id: socket.id });
+      io.sockets.connected[Object.keys(io.nsps[defaultNsps].adapter.rooms[data])[0]].emit('getPosition', { id: socket.id });
     }
   });
   
