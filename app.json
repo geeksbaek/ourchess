@@ -1,7 +1,0 @@
-{
-  "name": "ourChess",
-  "description": "ourChess",
-  "repository": "https://github.com/geeksbaek/ourChess",
-  "keywords": ["node", "socket.io", "chess"],
-  "image": "heroku/nodejs"
-}
