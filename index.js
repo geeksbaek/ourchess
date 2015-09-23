@@ -87,7 +87,7 @@ io.on('connection', function (socket) {
   });
   
   socket.on('disconnect', function () {
-    if (socket.room != null) {
+    if (socket.room != null && io.nsps[defaultNsps].adapter.rooms[socket.room]) {
       if (socket.id == socket.whiteId) {
         for (var i = 0, max = Object.keys(io.nsps[defaultNsps].adapter.rooms[socket.room]).length; i < max; i++) {
           io.sockets.connected[io.nsps[defaultNsps].adapter.rooms[socket.room][i].id].emit('roomBrokenByWhite');

@@ -76,8 +76,29 @@ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
 
 body {
   margin: 4px;
+}
+
+#chessBoard:before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  
+  display: block;
   background-image: url(/img/background2.jpg);
   background-size: cover;
+  
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+  
+  height: 100%;
+  width: 100%;
 }
 
 .button {
