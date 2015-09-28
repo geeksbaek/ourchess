@@ -66,10 +66,7 @@ var defaultNsps = '/';
 io.on('connection', function (socket) {
   socket.on('join', function (data){
     socket.room = data;
-    socket.join(socket.room);
-    
-    console.log(typeof Object.keys(io.nsps[defaultNsps].adapter.rooms[data]).length);
-    
+    socket.join(socket.room);    
     if (Object.keys(io.nsps[defaultNsps].adapter.rooms[data]).length === 1) {
       socket.whiteId = socket.id;
       socket.emit('id', { yourColor: 'W', opponentColor: 'B', yourId: socket.id.substring(0, 3), length: Object.keys(io.nsps[defaultNsps].adapter.rooms[data]).length });
