@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+  <script src="https://code.jquery.com/jquery-latest.js"></script>
+  <!--<script src="http://baekjongyeol-lab.appspot.com/js/geeksbaek.js"></script>-->
+  <script>
+    $(window).load(function () {
+      $('#errorImage').center();
+      $('#errorImage').fadeIn(300);
+    });
+    $(window).resize(function () { $('#errorImage').center(); });
+
+    jQuery.fn.center = function () {
+      this.css("position", "absolute");
+      this.css("top", Math.max(0, (($(window).height() - this.outerHeight()) / 2)));
+      this.css("left", Math.max(0, (($(window).width() - this.outerWidth()) / 2)));
+    }
+  </script>
+  <style>
+    @media all and (orientation: landscape) {
+      #errorImage {
+        height: 70%;
+        width: auto;
+      }
+    }
+
+    @media all and (orientation: portrait) {
+      #errorImage {
+        height: auto;
+        width: 70%;
+      }
+    }
+  </style>
+  <title>404 Not Found</title>
+</head>
+<body>
+  <img id="errorImage" src="/img/troll-sad-troll-face.png" style="display: none;" />
+</body>
+</html>
