@@ -55,6 +55,6 @@ function drawPieceX(context, piece, x, y) {
   context.shadowOffsetY = 2;
   context.shadowBlur = 2;
   context.shadowColor = 'rgba(0, 0, 0, 0.5)';
-  context.drawImage(OURCHESS.loadedPiece[piece], x * OURCHESS.PIECE_SIZE, y * OURCHESS.PIECE_SIZE, OURCHESS.PIECE_SIZE, OURCHESS.PIECE_SIZE);
+  context.drawImage(OURCHESS.loadedPiece[piece], x * OURCHESS.PIECE_SIZE + 5, y * OURCHESS.PIECE_SIZE + 5, OURCHESS.PIECE_SIZE - 10, OURCHESS.PIECE_SIZE - 10);
   context.restore();
 }

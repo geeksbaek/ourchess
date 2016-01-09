@@ -191,20 +191,36 @@ function preloadImage(room) {
   progress.center();
   progress.show();
 
-  var ret = {
-    'BB': loader.addImage('/img/BB.png'),
-    'BK': loader.addImage('/img/BK.png'),
-    'BN': loader.addImage('/img/BN.png'),
-    'BP': loader.addImage('/img/BP.png'),
-    'BQ': loader.addImage('/img/BQ.png'),
-    'BR': loader.addImage('/img/BR.png'),
+//   var ret = {
+//     'BB': loader.addImage('/img/BB.png'),
+//     'BK': loader.addImage('/img/BK.png'),
+//     'BN': loader.addImage('/img/BN.png'),
+//     'BP': loader.addImage('/img/BP.png'),
+//     'BQ': loader.addImage('/img/BQ.png'),
+//     'BR': loader.addImage('/img/BR.png'),
 
-    'WB': loader.addImage('/img/WB.png'),
-    'WK': loader.addImage('/img/WK.png'),
-    'WN': loader.addImage('/img/WN.png'),
-    'WP': loader.addImage('/img/WP.png'),
-    'WQ': loader.addImage('/img/WQ.png'),
-    'WR': loader.addImage('/img/WR.png')
+//     'WB': loader.addImage('/img/WB.png'),
+//     'WK': loader.addImage('/img/WK.png'),
+//     'WN': loader.addImage('/img/WN.png'),
+//     'WP': loader.addImage('/img/WP.png'),
+//     'WQ': loader.addImage('/img/WQ.png'),
+//     'WR': loader.addImage('/img/WR.png')
+//   };
+  
+  var ret = {
+    'BB': loader.addImage('/img/chess_piece_black_bishop.svg'),
+    'BK': loader.addImage('/img/chess_piece_black_king.svg'),
+    'BN': loader.addImage('/img/chess_piece_black_knight.svg'),
+    'BP': loader.addImage('/img/chess_piece_black_pawn.svg'),
+    'BQ': loader.addImage('/img/chess_piece_black_queen.svg'),
+    'BR': loader.addImage('/img/chess_piece_black_rook.svg'),
+
+    'WB': loader.addImage('/img/chess_piece_white_bishop.svg'),
+    'WK': loader.addImage('/img/chess_piece_white_king.svg'),
+    'WN': loader.addImage('/img/chess_piece_white_knight.svg'),
+    'WP': loader.addImage('/img/chess_piece_white_pawn.svg'),
+    'WQ': loader.addImage('/img/chess_piece_white_queen.svg'),
+    'WR': loader.addImage('/img/chess_piece_white_rook.svg')
   };
 
   loader.addProgressListener(function (e) {
