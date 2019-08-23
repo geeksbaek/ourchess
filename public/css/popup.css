@@ -1,0 +1,26 @@
+﻿#bgPopup {
+    display: none;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #000000;
+    z-index: 1;
+}
+
+#Popup {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    box-shadow: 0px 5px 9px rgba(0, 0, 0, 0.5);
+}
+
+    #Popup:hover {
+        cursor: pointer;
+    }
+
+#contents {
+  font-size: 1.2em;
+  margin: 0 auto;
+}

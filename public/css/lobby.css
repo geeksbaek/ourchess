@@ -1,0 +1,33 @@
+﻿* {
+  font-family: 'Nunito', sans-serif;
+  text-rendering: optimizelegibility;
+  -webkit-text-stroke: 0.1px;
+}
+
+body {
+  margin: 0 auto;
+  padding-left: 5%;
+  padding-right: 5%;
+  width: 50%;
+  background-color: whitesmoke;
+}
+
+#gameEnter {
+  margin-top: 50px;
+}
+
+footer {
+  padding-top: 15px;
+  margin: 50px auto 30px auto;
+  width: 100%;
+  height: 120px;
+}
+
+donate {
+}
+
+@media all and (max-width:959px) { /* 모바일 */
+  body {
+    width: 90%;
+  }
+}
